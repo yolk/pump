@@ -1,5 +1,5 @@
 require "pump/version"
+require "pump/xml"
 
 module Pump
-  # Your code goes here...
 end

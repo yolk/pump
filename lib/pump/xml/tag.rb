@@ -1,0 +1,74 @@
+require 'pump/xml/node'
+
+module Pump
+  class Xml
+    class Tag < Node
+      INSTRUCT = "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\n"
+
+      def initialize(*args)
+        super
+        if value_nodes?
+          nodes.first.options = options
+        end
+      end
+
+      def to_s
+        if !value_nodes? || options[:never_blank]
+          "#{open_tag}#{value_and_close_tag}"
+        else
+          "#{open_tag}\#{v = #{nodes.first.plain};''}#{nil_attribute}\#{#{value_and_close_tag_with_blank_check}}"
+        end
+      end
+
+      private
+
+      def value_nodes?
+        Value === nodes.first
+      end
+
+      def open_tag
+        "#{prefix}<#{name}#{attributes_string}"
+      end
+
+      def prefix
+        if level == 0
+          options[:instruct] ? INSTRUCT : ""
+        else
+          "\n#{" "*indent}"
+        end
+      end
+
+      def value_and_close_tag(path=nil)
+        value = value_nodes? ? nodes.first.to_s(path) : (nodes.map(&:to_s).join << "\n")
+        ">#{value}</#{name}>"
+      end
+
+      def value_and_close_tag_with_blank_check
+        "#{blank_check} ? #{close_blank_tag} : \"#{value_and_close_tag('v')}\""
+      end
+
+      def attributes_string
+        return "" if !attributes || attributes.size == 0
+        attributes.inject('') do |str, (key, value)|
+          str << " #{key}=\\\"#{value}\\\""
+        end
+      end
+
+      def nil_attribute
+        "\#{\" nil=\\\"true\\\"\" if v.nil?}" if options[:nil_check]
+      end
+
+      def blank_check
+        if respond_to?(:blank?)
+          "v.blank?"
+        else
+          "v.nil? || v == ''"
+        end
+      end
+
+      def close_blank_tag
+        "\"/>\""
+      end
+    end
+  end
+end
