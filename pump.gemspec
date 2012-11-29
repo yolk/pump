@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Fast but inflexible XML dumping for ruby objects.}
   gem.summary       = %q{Fast but inflexible XML dumping for ruby objects.}
   gem.homepage      = "https://github.com/yolk/pump"
+  gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
