@@ -9,10 +9,6 @@ module Pump
       build
     end
 
-    def serialize(object)
-      # "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<#{@root_name}>\n  <name>#{record.name}</name>\n</#{@root_name}>"
-    end
-
     private
 
     def build
