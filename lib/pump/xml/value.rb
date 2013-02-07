@@ -10,7 +10,17 @@ module Pump
       end
 
       def to_s(plain_path=nil)
-        "\#{#{plain_path || plain}#{'.to_s.encode(:xml => :text)' unless options[:skip_encoding]}}"
+        "\#{#{plain_path || plain}#{cast}}"
+      end
+
+      private
+
+      def cast
+        if options[:typecast]
+          ".#{options[:typecast]}"
+        elsif !options[:skip_encoding]
+          '.to_s.encode(:xml => :text)'
+        end
       end
     end
   end

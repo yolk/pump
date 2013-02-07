@@ -144,5 +144,23 @@ describe Pump::Xml do
         xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <last-name>Hellman</last-name>\n</person>")
       end
     end
+
+    context "with date attribute" do
+      let(:person) { Struct.new(:at).new(Date.new(2013, 2, 7)) }
+      let(:xml) { Pump::Xml.new('person', [{:at => :at, :attributes => {:type => 'date'}}]) }
+
+      it "returns xml string" do
+        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"date\">2013-02-07</at>\n</person>")
+      end
+    end
+
+    context "with datetime attribute" do
+      let(:person) { Struct.new(:at).new(Time.new(2013, 2, 7, 0, 0, 0)) }
+      let(:xml) { Pump::Xml.new('person', [{:at => :at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}}]) }
+
+      it "returns xml string" do
+        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\">2013-02-07T00:00:00+01:00</at>\n</person>")
+      end
+    end
   end
 end
