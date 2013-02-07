@@ -65,6 +65,15 @@ describe Pump::Xml do
           xml.serialize(people).should eql("  <people type=\"array\">\n    <person>\n      <name>Benny</name>\n    </person>\n  </people>")
         end
       end
+
+      context "with array_root" do
+        let(:people) { [person] }
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}], :instruct => false, :array_root => "personas") }
+
+        it "returns xml string" do
+          xml.serialize(people).should eql("<personas type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n</personas>")
+        end
+      end
     end
 
     context "with no instruct" do

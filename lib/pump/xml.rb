@@ -43,7 +43,7 @@ module Pump
     end
 
     def tag_options
-      {:instruct => add_instruct?, :extra_indent => @options[:extra_indent] }
+      {:instruct => add_instruct?, :extra_indent => @options[:extra_indent], :array_root => @options[:array_root] }
     end
 
     def add_instruct?

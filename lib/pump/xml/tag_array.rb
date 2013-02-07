@@ -6,7 +6,8 @@ module Pump
     class TagArray < Node
       def initialize(name, attributes={}, nodes=[], options={})
         tag = Tag.new(name, attributes, nodes, {:level => 1, :extra_indent => options[:extra_indent]})
-        super(name.pluralize, {}, [tag], options)
+        array_root = options[:array_root] || name.pluralize
+        super(array_root, {}, [tag], options)
       end
 
       def to_s
