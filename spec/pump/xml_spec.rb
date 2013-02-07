@@ -10,7 +10,7 @@ describe Pump::Xml do
   end
 
   describe "#serialize" do
-    let(:person) { Struct.new(:name, :age).new('Benny', 9) }
+    let(:person) { Struct.new(:name, :age, :last_name).new('Benny', 9, 'Hellman') }
     let(:xml) { Pump::Xml.new('person', [{:name => :name}]) }
 
     it "requires one object" do
@@ -126,6 +126,22 @@ describe Pump::Xml do
         it do
           xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name nil=\"true\"/>\n</person>")
         end
+      end
+    end
+
+    context "with multiple attrubutes" do
+      let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age}]) }
+
+      it "returns xml string" do
+        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n  <age>9</age>\n</person>")
+      end
+    end
+
+    context "with renamed attrubutes" do
+      let(:xml) { Pump::Xml.new('person', [{"last-name" => :last_name}]) }
+
+      it "returns xml string" do
+        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <last-name>Hellman</last-name>\n</person>")
       end
     end
   end

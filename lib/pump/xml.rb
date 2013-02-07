@@ -37,9 +37,9 @@ module Pump
     end
 
     def sub_tags
-      tag_config.map do |options|
-        tag_name, method_name = options.keys.first, options.values.first
-        Tag.new(tag_name, options[:attributes], Value.new(method_name), options)
+      tag_config.map do |config|
+        tag_name, method_name = config.keys.first, config.values.first
+        Tag.new(tag_name, config[:attributes], Value.new(method_name), config)
       end
     end
 
