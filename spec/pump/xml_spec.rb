@@ -161,6 +161,14 @@ describe Pump::Xml do
       it "returns xml string" do
         xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\">2013-02-07T00:00:00+01:00</at>\n</person>")
       end
+
+      context "but nil" do
+        let(:person) { Struct.new(:at).new(nil) }
+
+        it "returns xml string" do
+          xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\"/>\n</person>")
+        end
+      end
     end
   end
 end
