@@ -32,15 +32,15 @@ module Pump
 
       def prefix
         if level == 0
-          options[:instruct] ? INSTRUCT : ""
+          options[:instruct] ? INSTRUCT : (tabs)
         else
-          "\n#{" "*indent}"
+          "\n#{tabs}"
         end
       end
 
       def value_and_close_tag(path=nil)
         value = value_nodes? ? nodes.first.to_s(path) : (nodes.map(&:to_s).join << "\n")
-        ">#{value}</#{name}>"
+        ">#{value}#{tabs unless value_nodes?}</#{name}>"
       end
 
       def value_and_close_tag_with_blank_check

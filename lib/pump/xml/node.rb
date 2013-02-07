@@ -7,7 +7,7 @@ module Pump
       def initialize(name, attributes={}, nodes=[], options={})
         @name       = name
         @attributes = attributes || {}
-        @options    = options || {}
+        @options    = (options || {}).dup
         @nodes      = []
         Array(nodes).each{|node| add_node(node) }
       end
@@ -19,6 +19,7 @@ module Pump
 
       def add_node(node)
         node.level = level + 1
+        node.options[:extra_indent] = options[:extra_indent]
         nodes << node
       end
 
@@ -26,8 +27,12 @@ module Pump
         @level || options[:level] || 0
       end
 
-      def indent
-        (level)*(options[:indent] || 2)
+      def tabs
+        " " * ((level + extra_indent) * 2)
+      end
+
+      def extra_indent
+        options[:extra_indent] || 0
       end
     end
   end
