@@ -46,6 +46,8 @@ module Pump
       tag_name, method_name = config.keys.first, config.values.first
       if method_name.is_a?(Array)
         Tag.new(tag_name, config[:attributes], method_name.map{|conf| build_tag(conf) }, config)
+      elsif config[:array].is_a?(Array)
+        TagArray.new(tag_name, config[:attributes], config[:array].map{|conf| build_tag(conf) }, config.merge({:array_method => method_name}))
       else
         Tag.new(tag_name, config[:attributes], Value.new(method_name), config)
       end

@@ -15,14 +15,14 @@ describe Pump::Xml::Tag do
       subject{ Pump::Xml::Tag.new("tag", attributes, Pump::Xml::Value.new('method'), options).to_s }
 
       it {should eql(
-        "<tag\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\"}"
+        "<tag\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\n\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\n\"}"
       )}
 
       context "with :nil_check => true" do
         let(:options) { {:nil_check => true} }
 
         it {should eql(
-          "<tag\#{v = object.method;''}\#{\" nil=\\\"true\\\"\" if v.nil?}\#{v.nil? || v == '' ? \"/>\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\"}"
+          "<tag\#{v = object.method;''}\#{\" nil=\\\"true\\\"\" if v.nil?}\#{v.nil? || v == '' ? \"/>\n\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\n\"}"
         )}
       end
 
@@ -30,14 +30,14 @@ describe Pump::Xml::Tag do
         let(:options) { {:never_blank => true} }
 
         it {should eql(
-          "<tag>\#{object.method.to_s.encode(:xml => :text)}</tag>"
+          "<tag>\#{object.method.to_s.encode(:xml => :text)}</tag>\n"
         )}
 
         context "with attributes" do
           let(:attributes) { {:foo => "bar"} }
 
           it {should eql(
-            "<tag foo=\\\"bar\\\">\#{object.method.to_s.encode(:xml => :text)}</tag>"
+            "<tag foo=\\\"bar\\\">\#{object.method.to_s.encode(:xml => :text)}</tag>\n"
           )}
         end
       end
@@ -46,7 +46,7 @@ describe Pump::Xml::Tag do
         let(:options) { {:skip_encoding => true} }
 
         it {should eql(
-          "<tag\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\" : \">\#{v}</tag>\"}"
+          "<tag\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\n\" : \">\#{v}</tag>\n\"}"
         )}
       end
 
@@ -54,7 +54,7 @@ describe Pump::Xml::Tag do
         let(:attributes) { {:foo => "bar"} }
 
         it {should eql(
-          "<tag foo=\\\"bar\\\"\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\"}"
+          "<tag foo=\\\"bar\\\"\#{v = object.method;''}\#{v.nil? || v == '' ? \"/>\n\" : \">\#{v.to_s.encode(:xml => :text)}</tag>\n\"}"
         )}
       end
     end
@@ -69,7 +69,7 @@ describe Pump::Xml::Tag do
       subject{ tag1.to_s }
 
       it {should eql(
-        "<root>\n  <child>\#{object.method}</child>\n</root>"
+        "<root>\n  <child>\#{object.method}</child>\n</root>\n"
       )}
     end
   end

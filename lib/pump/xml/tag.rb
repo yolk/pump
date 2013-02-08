@@ -34,13 +34,13 @@ module Pump
         if level == 0
           options[:instruct] ? INSTRUCT : (tabs)
         else
-          "\n#{tabs}"
+          "#{tabs}"
         end
       end
 
       def value_and_close_tag(path=nil)
-        value = value_nodes? ? nodes.first.to_s(path) : (nodes.map(&:to_s).join << "\n")
-        ">#{value}#{tabs unless value_nodes?}</#{name}>"
+        value = value_nodes? ? nodes.first.to_s(path) : ("\n" << nodes.map(&:to_s).join)
+        ">#{value}#{tabs unless value_nodes?}</#{name}>\n"
       end
 
       def value_and_close_tag_with_blank_check
@@ -67,7 +67,7 @@ module Pump
       end
 
       def close_blank_tag
-        "\"/>\""
+        "\"/>\n\""
       end
 
       def condition_start
