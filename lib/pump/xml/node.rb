@@ -2,7 +2,6 @@ module Pump
   class Xml
     class Node
       attr_reader :name, :attributes, :nodes, :options
-      attr_writer :level
 
       def initialize(name, attributes={}, nodes=[], options={})
         @name       = name
@@ -13,6 +12,11 @@ module Pump
       end
 
       def to_s
+      end
+
+      def level=(new_level)
+        @level = new_level
+        nodes.each{|node| node.level = @level + 1}
       end
 
       private

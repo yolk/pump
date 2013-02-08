@@ -7,7 +7,9 @@ module Pump
 
       def initialize(*args)
         super
-        nodes.first.options = options if value_nodes?
+        if value_nodes?
+          nodes.first.options = options
+        end
       end
 
       def to_s

@@ -38,7 +38,15 @@ module Pump
 
     def sub_tags
       tag_config.map do |config|
-        tag_name, method_name = config.keys.first, config.values.first
+        build_tag(config)
+      end
+    end
+
+    def build_tag(config)
+      tag_name, method_name = config.keys.first, config.values.first
+      if method_name.is_a?(Array)
+        Tag.new(tag_name, config[:attributes], method_name.map{|conf| build_tag(conf) }, config)
+      else
         Tag.new(tag_name, config[:attributes], Value.new(method_name), config)
       end
     end

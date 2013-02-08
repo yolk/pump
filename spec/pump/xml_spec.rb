@@ -199,5 +199,13 @@ describe Pump::Xml do
         end
       end
     end
+
+    context "deeper nesting" do
+      let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}]}], :instruct => false) }
+
+      it "returns xml string" do
+        xml.encode(person).should eql("<person>\n  <name>Benny</name>\n  <parent>\n    <name>Benny</name>\n    <age>9</age>\n  </parent>\n</person>")
+      end
+    end
   end
 end
