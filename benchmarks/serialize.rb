@@ -15,6 +15,20 @@ class Person < Struct.new(:name, :age, :created_at)
   end
 end
 
+# Not optimized pump
+pump = Pump::Xml.new('person', [
+  {:age => :age, :attributes => {:type => 'integer'}},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true},
+  {:name => :name}
+])
+
+# Heavily optimized pump
+pump_optimized = Pump::Xml.new('person', [
+  {:age => :age, :attributes => {:type => 'integer'}, :never_blank => true, :skip_encoding => true},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true, :skip_encoding => true},
+  {:name => :name, :never_blank => true}
+])
+
 if defined?(Ox)
   def serialize_with_ox(people)
     doc = Ox::Document.new(:version => '1.0', :encoding => 'UTF-8')
@@ -52,31 +66,15 @@ if defined?(Ox)
   end
 end
 
-array = [
-  Person.new('Arndt', 32, Time.now),
-  Person.new('Berta', 42, Time.now),
-  Person.new('Claus', 22, Time.now),
-  Person.new('Ditmar', 55, Time.now),
-  Person.new('Eddie', 7, Time.now)
-] * 100
-
-# Not optimized pump
-pump = Pump::Xml.new('person', [
-  {:age => :age, :attributes => {:type => 'integer'}},
-  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true},
-  {:name => :name}
-])
-
-# Heavily optimized pump
-pump_optimized = Pump::Xml.new('person', [
-  {:age => :age, :attributes => {:type => 'integer'}, :never_blank => true, :skip_encoding => true},
-  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true, :skip_encoding => true},
-  {:name => :name, :never_blank => true}
-])
-
+# Lets generate some random persons
+array = []
+100.times do
+  array << Person.new((0...(rand(15)+5)).map{ ('a'..'z').to_a[rand(26)] }.join, rand(100), Time.now + rand(1000000))
+end
 
 times = ARGV[1] ? ARGV[1].to_i : 1000
 puts "Starting benchmark serializing array with #{array.size} entries #{times} times\n\n"
+
 Benchmark.bmbm { |x|
 
   x.report("Pump::Xml#serialize") {
