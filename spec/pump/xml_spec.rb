@@ -9,26 +9,26 @@ describe Pump::Xml do
     end
   end
 
-  describe "#serialize" do
+  describe "#encode" do
     let(:person) { Struct.new(:name, :age, :last_name).new('Benny', 9, 'Hellman') }
     let(:xml) { Pump::Xml.new('person', [{:name => :name}]) }
 
     it "requires one object" do
-      lambda{ xml.serialize }.should raise_error(ArgumentError)
-      lambda{ xml.serialize(person) }.should_not raise_error
+      lambda{ xml.encode }.should raise_error(ArgumentError)
+      lambda{ xml.encode(person) }.should_not raise_error
     end
 
     it "returns xml string" do
-      xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n</person>")
+      xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n</person>")
     end
 
-    context "with array to serialize" do
+    context "with array" do
 
       context "with one entry" do
         let(:people) { [person] }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n</people>")
+          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n</people>")
         end
       end
 
@@ -36,7 +36,7 @@ describe Pump::Xml do
         let(:people) { [person, Struct.new(:name, :age).new('Carlo', 5)] }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n  <person>\n    <name>Carlo</name>\n  </person>\n</people>")
+          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n  <person>\n    <name>Carlo</name>\n  </person>\n</people>")
         end
       end
 
@@ -44,7 +44,7 @@ describe Pump::Xml do
         let(:people) { [] }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("#{XML_INSTRUCT}<people type=\"array\" />")
+          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\" />")
         end
       end
 
@@ -53,7 +53,7 @@ describe Pump::Xml do
         let(:people) { [] }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("<people type=\"array\" />")
+          xml.encode(people).should eql("<people type=\"array\" />")
         end
       end
 
@@ -62,7 +62,7 @@ describe Pump::Xml do
         let(:xml) { Pump::Xml.new('person', [{:name => :name}], :instruct => false, :extra_indent => 1) }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("  <people type=\"array\">\n    <person>\n      <name>Benny</name>\n    </person>\n  </people>")
+          xml.encode(people).should eql("  <people type=\"array\">\n    <person>\n      <name>Benny</name>\n    </person>\n  </people>")
         end
       end
 
@@ -71,7 +71,7 @@ describe Pump::Xml do
         let(:xml) { Pump::Xml.new('person', [{:name => :name}], :instruct => false, :array_root => "personas") }
 
         it "returns xml string" do
-          xml.serialize(people).should eql("<personas type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n</personas>")
+          xml.encode(people).should eql("<personas type=\"array\">\n  <person>\n    <name>Benny</name>\n  </person>\n</personas>")
         end
       end
     end
@@ -80,7 +80,7 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{:name => :name}], :instruct => false) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("<person>\n  <name>Benny</name>\n</person>")
+        xml.encode(person).should eql("<person>\n  <name>Benny</name>\n</person>")
       end
     end
 
@@ -88,7 +88,7 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{:name => :name}], :instruct => false, :extra_indent => 1) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("  <person>\n    <name>Benny</name>\n  </person>")
+        xml.encode(person).should eql("  <person>\n    <name>Benny</name>\n  </person>")
       end
     end
 
@@ -101,7 +101,7 @@ describe Pump::Xml do
       end
 
       it do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n  <age type=\"integer\">9</age>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n  <age type=\"integer\">9</age>\n</person>")
       end
     end
 
@@ -109,7 +109,7 @@ describe Pump::Xml do
       let(:person) { Struct.new(:name, :age).new('', 9) }
 
       it do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>")
       end
     end
 
@@ -117,14 +117,14 @@ describe Pump::Xml do
       let(:person) { Struct.new(:name, :age).new(nil, 9) }
 
       it do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>")
       end
 
       context "and with :nil_check => true" do
         let(:xml) { Pump::Xml.new('person', [{:name => :name, :nil_check => true}]) }
 
         it do
-          xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name nil=\"true\"/>\n</person>")
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name nil=\"true\"/>\n</person>")
         end
       end
     end
@@ -133,7 +133,7 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age}]) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n  <age>9</age>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n  <age>9</age>\n</person>")
       end
     end
 
@@ -141,7 +141,7 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{"last-name" => :last_name}]) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <last-name>Hellman</last-name>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <last-name>Hellman</last-name>\n</person>")
       end
     end
 
@@ -150,7 +150,7 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{:at => :at, :attributes => {:type => 'date'}}]) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"date\">2013-02-07</at>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"date\">2013-02-07</at>\n</person>")
       end
     end
 
@@ -159,14 +159,14 @@ describe Pump::Xml do
       let(:xml) { Pump::Xml.new('person', [{:at => :at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}}]) }
 
       it "returns xml string" do
-        xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\">2013-02-07T00:00:00+01:00</at>\n</person>")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\">2013-02-07T00:00:00+01:00</at>\n</person>")
       end
 
       context "but nil" do
         let(:person) { Struct.new(:at).new(nil) }
 
         it "returns xml string" do
-          xml.serialize(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\"/>\n</person>")
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\"/>\n</person>")
         end
       end
     end

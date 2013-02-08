@@ -77,15 +77,15 @@ puts "Starting benchmark serializing array with #{array.size} entries #{times} t
 
 Benchmark.bmbm { |x|
 
-  x.report("Pump::Xml#serialize") {
+  x.report("Pump::Xml#encode") {
     times.times {
-      pump.serialize(array)
+      pump.encode(array)
     }
   }
 
-  x.report("Pump::Xml#serialize (optimized)") {
+  x.report("Pump::Xml#encode (optimized)") {
     times.times {
-      pump_optimized.serialize(array)
+      pump_optimized.encode(array)
     }
   }
 

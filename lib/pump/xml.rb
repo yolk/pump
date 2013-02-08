@@ -14,8 +14,8 @@ module Pump
       compile
     end
 
-    def serialize(object)
-      Array === object ? serialize_array(object) : serialize_single(object)
+    def encode(object)
+      Array === object ? encode_array(object) : encode_single(object)
     end
 
     private
@@ -26,11 +26,11 @@ module Pump
 
     def compile_string
       <<-EOV
-        def serialize_single(object)
+        def encode_single(object)
           "#{Tag.new(root_tag_name, {}, sub_tags, tag_options)}"
         end
 
-        def serialize_array(objects)
+        def encode_array(objects)
           "#{TagArray.new(root_tag_name, {}, sub_tags, tag_options)}"
         end
       EOV
