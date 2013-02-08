@@ -12,9 +12,9 @@ module Pump
 
       def to_s
         if !value_nodes? || options[:never_blank]
-          "#{open_tag}#{value_and_close_tag}"
+          "#{condition_start}#{open_tag}#{value_and_close_tag}#{condition_end}"
         else
-          "#{open_tag}\#{v = #{nodes.first.plain};''}#{nil_attribute}\#{#{value_and_close_tag_with_blank_check}}"
+          "#{condition_start}#{open_tag}\#{v = #{nodes.first.plain};''}#{nil_attribute}\#{#{value_and_close_tag_with_blank_check}}#{condition_end}"
         end
       end
 
@@ -66,6 +66,24 @@ module Pump
 
       def close_blank_tag
         "\"/>\""
+      end
+
+      def condition_start
+        "\#{\"" if conditional?
+      end
+
+      def condition_end
+        return unless conditional?
+
+        if options[:if]
+          "\" if object.#{options[:if]} }"
+        elsif options[:unless]
+          "\" unless object.#{options[:unless]} }"
+        end
+      end
+
+      def conditional?
+        !!(options[:if] || options[:unless])
       end
     end
   end

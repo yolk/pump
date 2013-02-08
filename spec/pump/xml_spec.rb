@@ -170,5 +170,34 @@ describe Pump::Xml do
         end
       end
     end
+
+    context "with conditionals" do
+      let(:person) { Struct.new(:name, :age, :is_young, :is_old).new('Gorbatschow', 82, false, true) }
+
+      context "simple if" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :if => :is_young}]) }
+
+        it "skips tag on false" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n</person>")
+        end
+      end
+
+      context "simple unless" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :unless => :is_old}]) }
+
+        it "skips tag on false" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n</person>")
+        end
+      end
+
+      context "chained" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :unless => 'age.nil?'}]) }
+        let(:people) { [person, Struct.new(:name, :age).new('Schewardnadse', nil)] }
+
+        it "skips tag on false" do
+          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Gorbatschow</name>\n    <age>82</age>\n  </person>\n  <person>\n    <name>Schewardnadse</name>\n  </person>\n</people>")
+        end
+      end
+    end
   end
 end
