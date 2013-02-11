@@ -13,7 +13,7 @@ module Pump
       end
 
       def to_s
-        if !value_nodes? || options[:never_blank]
+        if !value_nodes? || options[:never_nil]
           "#{condition_start}#{open_tag}#{value_and_close_tag}#{condition_end}"
         else
           "#{condition_start}#{open_tag}\#{v = #{nodes.first.plain};''}\#{#{value_and_close_tag_with_nil_check}}#{condition_end}"

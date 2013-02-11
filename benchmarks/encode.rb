@@ -18,15 +18,15 @@ end
 # Not optimized pump
 pump = Pump::Xml.new('person', [
   {:age => :age, :attributes => {:type => 'integer'}},
-  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true},
   {:name => :name}
 ])
 
 # Heavily optimized pump
 pump_optimized = Pump::Xml.new('person', [
-  {:age => :age, :attributes => {:type => 'integer'}, :never_blank => true, :skip_encoding => true},
-  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_blank => true, :skip_encoding => true},
-  {:name => :name, :never_blank => true}
+  {:age => :age, :attributes => {:type => 'integer'}, :never_nil => true, :skip_encoding => true},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true, :skip_encoding => true},
+  {:name => :name, :never_nil => true}
 ])
 
 if defined?(Ox)
