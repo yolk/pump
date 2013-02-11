@@ -44,7 +44,7 @@ describe Pump::Xml do
         let(:people) { [] }
 
         it "returns xml string" do
-          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\" />\n")
+          xml.encode(people).should eql("#{XML_INSTRUCT}<people type=\"array\"/>\n")
         end
       end
 
@@ -53,7 +53,7 @@ describe Pump::Xml do
         let(:people) { [] }
 
         it "returns xml string" do
-          xml.encode(people).should eql("<people type=\"array\" />\n")
+          xml.encode(people).should eql("<people type=\"array\"/>\n")
         end
       end
 

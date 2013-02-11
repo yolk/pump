@@ -21,7 +21,7 @@ module Pump
       end
 
       def loop_and_close_tag
-        "\#{ #{objects_path}.empty? ? \" />\n\" : \">\n#{tag_loop}#{tabs}</#{name}>\n\" }"
+        "\#{ #{objects_path}.empty? ? \"/>\n\" : \">\n#{tag_loop}#{tabs}</#{name}>\n\" }"
       end
 
       def objects_path
