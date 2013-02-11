@@ -6,8 +6,8 @@ Fast but inflexible XML encoding for ruby objects.
 
 Serializing an array of 100 random entries 1.000 times.
 
-                                      user     system      total        real
-    Pump::Xml#encode                  1.560000   0.020000   1.580000 (  1.581375)
-    Pump::Xml#encode (optimized)      1.060000   0.010000   1.070000 (  1.067321)
-    Ox                                1.470000   0.000000   1.470000 (  1.467247)
-    ActiveModel#serialize            22.840000   0.040000  22.880000 ( 22.871247)
+                                   user     system      total        real
+Pump::Xml#encode               1.450000   0.010000   1.460000 (  1.466962)
+Pump::Xml#encode (optimized)   1.100000   0.010000   1.110000 (  1.110234)
+Ox                             1.490000   0.000000   1.490000 (  1.483275)
+ActiveModel#serialize         23.280000   0.060000  23.340000 ( 23.333999)
