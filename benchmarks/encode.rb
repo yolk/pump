@@ -24,8 +24,8 @@ pump = Pump::Xml.new('person', [
 
 # Heavily optimized pump
 pump_optimized = Pump::Xml.new('person', [
-  {:age => :age, :attributes => {:type => 'integer'}, :never_nil => true, :skip_encoding => true},
-  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true, :skip_encoding => true},
+  {:age => :age, :attributes => {:type => 'integer'}, :never_nil => true, :xmlsafe => true},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true, :xmlsafe => true},
   {:name => :name, :never_nil => true}
 ])
 

@@ -18,7 +18,7 @@ module Pump
       def cast
         if options[:typecast]
           ".#{options[:typecast]}"
-        elsif !options[:skip_encoding]
+        elsif !options[:xmlsafe]
           '.to_s.encode(:xml => :text)'
         end
       end

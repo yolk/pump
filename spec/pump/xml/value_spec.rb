@@ -17,8 +17,8 @@ describe Pump::Xml::Value do
   describe "#to_s" do
     its(:to_s) { should eql("\#{object.method_name.to_s.encode(:xml => :text)}") }
 
-    context "with option :skip_encoding => true" do
-      subject { Pump::Xml::Value.new("method_name", {}, [], :skip_encoding => true) }
+    context "with option :xmlsafe => true" do
+      subject { Pump::Xml::Value.new("method_name", {}, [], :xmlsafe => true) }
 
       its(:to_s) { should eql("\#{object.method_name}") }
     end
