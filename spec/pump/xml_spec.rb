@@ -117,15 +117,7 @@ describe Pump::Xml do
       let(:person) { Struct.new(:name, :age).new(nil, 9) }
 
       it do
-        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>\n")
-      end
-
-      context "and with :nil_check => true" do
-        let(:xml) { Pump::Xml.new('person', [{:name => :name, :nil_check => true}]) }
-
-        it do
-          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name nil=\"true\"/>\n</person>\n")
-        end
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name nil=\"true\"/>\n</person>\n")
       end
     end
 
@@ -166,7 +158,7 @@ describe Pump::Xml do
         let(:person) { Struct.new(:at).new(nil) }
 
         it "returns xml string" do
-          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\"/>\n</person>\n")
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <at type=\"datetime\" nil=\"true\"/>\n</person>\n")
         end
       end
     end

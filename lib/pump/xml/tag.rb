@@ -16,7 +16,7 @@ module Pump
         if !value_nodes? || options[:never_blank]
           "#{condition_start}#{open_tag}#{value_and_close_tag}#{condition_end}"
         else
-          "#{condition_start}#{open_tag}\#{v = #{nodes.first.plain};''}#{nil_attribute}\#{#{value_and_close_tag_with_blank_check}}#{condition_end}"
+          "#{condition_start}#{open_tag}\#{v = #{nodes.first.plain};''}\#{#{value_and_close_tag_with_nil_check}}#{condition_end}"
         end
       end
 
@@ -43,8 +43,8 @@ module Pump
         ">#{value}#{tabs unless value_nodes?}</#{name}>\n"
       end
 
-      def value_and_close_tag_with_blank_check
-        "v.nil? ? \"/>\n\" : \"#{value_and_close_tag('v')}\""
+      def value_and_close_tag_with_nil_check
+        "v.nil? ? \" nil=\\\"true\\\"/>\n\" : \"#{value_and_close_tag('v')}\""
       end
 
       def attributes_string
@@ -52,10 +52,6 @@ module Pump
         attributes.inject('') do |str, (key, value)|
           str << " #{key}=\\\"#{value}\\\""
         end
-      end
-
-      def nil_attribute
-        "\#{\" nil=\\\"true\\\"\" if v.nil?}" if options[:nil_check]
       end
 
       def condition_start
