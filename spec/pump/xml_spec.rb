@@ -109,7 +109,7 @@ describe Pump::Xml do
       let(:person) { Struct.new(:name, :age).new('', 9) }
 
       it do
-        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name/>\n</person>\n")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name></name>\n</person>\n")
       end
     end
 

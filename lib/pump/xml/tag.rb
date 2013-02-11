@@ -44,7 +44,7 @@ module Pump
       end
 
       def value_and_close_tag_with_blank_check
-        "#{blank_check} ? #{close_blank_tag} : \"#{value_and_close_tag('v')}\""
+        "v.nil? ? \"/>\n\" : \"#{value_and_close_tag('v')}\""
       end
 
       def attributes_string
@@ -56,18 +56,6 @@ module Pump
 
       def nil_attribute
         "\#{\" nil=\\\"true\\\"\" if v.nil?}" if options[:nil_check]
-      end
-
-      def blank_check
-        if respond_to?(:blank?)
-          "v.blank?"
-        else
-          "v.nil? || v == ''"
-        end
-      end
-
-      def close_blank_tag
-        "\"/>\n\""
       end
 
       def condition_start
