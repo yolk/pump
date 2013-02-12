@@ -2,10 +2,21 @@ require 'spec_helper'
 
 describe Pump::Xml do
   describe ".new" do
-    it "requires two parameters" do
+    it "requires two parameters or one and a block" do
       lambda{ Pump::Xml.new }.should raise_error(ArgumentError)
       lambda{ Pump::Xml.new('record') }.should raise_error(ArgumentError)
       lambda{ Pump::Xml.new('record', []) }.should_not raise_error
+      lambda{ Pump::Xml.new('record') {} }.should_not raise_error
+    end
+
+    describe "with block given" do
+      subject do
+        Pump::Xml.new('human', :instruct => false) do
+          tag :name
+        end.encode(Struct.new(:name).new('Artur'))
+      end
+
+      its(:encode) { should eql("<human>\n  <name>Artur</name>\n</human>\n")}
     end
   end
 
@@ -223,8 +234,5 @@ describe Pump::Xml do
         end
       end
     end
-
-
-
   end
 end

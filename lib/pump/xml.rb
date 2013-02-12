@@ -8,10 +8,16 @@ module Pump
   class Xml
     attr_reader :root_tag_name, :tag_config, :options
 
-    def initialize(root_tag_name, tag_config, options={})
+    def initialize(root_tag_name, tag_config=nil, options={}, &blk)
+      unless Array === tag_config
+        raise ArgumentError unless block_given?
+        @options = tag_config || {}
+        @tag_config = Dsl.new(&blk).config
+      else
+        @tag_config    = tag_config
+        @options       = options
+      end
       @root_tag_name = root_tag_name
-      @tag_config    = tag_config
-      @options       = options
 
       compile
     end
