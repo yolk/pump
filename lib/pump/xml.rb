@@ -1,6 +1,8 @@
 require "pump/xml/tag"
 require "pump/xml/value"
 require "pump/xml/tag_array"
+require "pump/xml/dsl"
+require 'active_support/core_ext/string/inflections'
 
 module Pump
   class Xml
@@ -44,12 +46,14 @@ module Pump
 
     def build_tag(config)
       tag_name, method_name = config.keys.first, config.values.first
+      attrs = config[:attributes]
       if method_name.is_a?(Array)
-        Tag.new(tag_name, config[:attributes], method_name.map{|conf| build_tag(conf) }, config)
-      elsif config[:array].is_a?(Array)
-        TagArray.new(tag_name, config[:attributes], config[:array].map{|conf| build_tag(conf) }, config.merge({:array_method => method_name}))
+        Tag.new(tag_name, attrs, method_name.map{|conf| build_tag(conf) }, config)
+      elsif config[:array]
+        config.merge!(:array_method => method_name, :array_root => tag_name)
+        TagArray.new(config[:child_root] || tag_name.to_s.singularize, attrs, config[:array].map{|conf| build_tag(conf) }, config)
       else
-        Tag.new(tag_name, config[:attributes], Value.new(method_name), config)
+        Tag.new(tag_name, attrs, Value.new(method_name), config)
       end
     end
 

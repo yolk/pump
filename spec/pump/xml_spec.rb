@@ -201,11 +201,26 @@ describe Pump::Xml do
     end
 
     context "deep array-like nesting" do
-      let(:person) { Struct.new(:name, :children).new('Gustav', [Struct.new(:name).new('Lilly'), Struct.new(:name).new('Lena')]) }
-      let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:child => :children, :array => [{:name => :name}]}], :instruct => false) }
+      let(:person) {
+        Struct.new(:name, :children).new('Gustav', [
+          Struct.new(:name).new('Lilly'),
+          Struct.new(:name).new('Lena')
+      ]) }
+
+      let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:children => :children,
+                                            :array => [{:name => :name}]}], :instruct => false) }
 
       it "returns xml string" do
         xml.encode(person).should eql("<person>\n  <name>Gustav</name>\n  <children type=\"array\">\n    <child>\n      <name>Lilly</name>\n    </child>\n    <child>\n      <name>Lena</name>\n    </child>\n  </children>\n</person>\n")
+      end
+
+      context "overwriting child name" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:children => :children,
+                                            :array => [{:name => :name}], :child_root => 'kid'}], :instruct => false) }
+
+        it "returns xml string" do
+          xml.encode(person).should eql("<person>\n  <name>Gustav</name>\n  <children type=\"array\">\n    <kid>\n      <name>Lilly</name>\n    </kid>\n    <kid>\n      <name>Lena</name>\n    </kid>\n  </children>\n</person>\n")
+        end
       end
     end
 
