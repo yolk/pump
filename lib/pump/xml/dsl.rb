@@ -26,6 +26,10 @@ module Pump
         with_type('integer', name, options)
       end
 
+      def float(name, options={})
+        with_type('float', name, options)
+      end
+
       def date(name, options={})
         with_type('date', name, options)
       end

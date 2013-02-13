@@ -53,6 +53,16 @@ describe Pump::Xml::Dsl do
       end
     end
 
+    context "with float" do
+      subject { Pump::Xml::Dsl.new { float :name } }
+      its(:config) { should eql([{:name => :name, :attributes => {:type => 'float'}, :xmlsafe => true}]) }
+
+      context "with attributes and options" do
+        subject { Pump::Xml::Dsl.new { float :name, :attributes => {:a => 'b'}, :options => false } }
+        its(:config) { should eql([{:name => :name, :attributes => {:type => 'float', :a => 'b'}, :options => false, :xmlsafe => true}]) }
+      end
+    end
+
     context "with date" do
       subject { Pump::Xml::Dsl.new { date :at } }
       its(:config) { should eql([{:at => :at, :attributes => {:type => 'date'}, :xmlsafe => true}]) }
