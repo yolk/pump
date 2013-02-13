@@ -30,6 +30,10 @@ module Pump
         with_type('float', name, options)
       end
 
+      def boolean(name, options={})
+        with_type('boolean', name, options)
+      end
+
       def date(name, options={})
         with_type('date', name, options)
       end
