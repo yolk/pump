@@ -56,7 +56,7 @@ module Pump
     #
     # @return [String]
     def encode(object)
-      Array === object ? encode_array(object) : encode_single(object)
+      object.is_a?(Array) ? encode_array(object) : encode_single(object)
     end
 
     private
