@@ -13,7 +13,9 @@ module Pump
       end
 
       def to_s
-        if !value_nodes? || options[:never_nil]
+        if options.has_key?(:static_value)
+          "#{condition_start}#{open_tag}#{static_value_and_close_tag}#{condition_end}"
+        elsif !value_nodes? || options[:never_nil]
           "#{condition_start}#{open_tag}#{value_and_close_tag}#{condition_end}"
         else
           "#{condition_start}#{open_tag}\#{v = #{nodes.first.plain};''}\#{#{value_and_close_tag_with_nil_check}}#{condition_end}"
@@ -45,6 +47,11 @@ module Pump
 
       def value_and_close_tag_with_nil_check
         "v.nil? ? \" nil=\\\"true\\\"/>\n\" : \"#{value_and_close_tag('v')}\""
+      end
+
+      def static_value_and_close_tag
+        return " nil=\\\"true\\\"/>\n" if options[:static_value].nil?
+        ">#{options[:static_value]}</#{name}>\n"
       end
 
       def attributes_string

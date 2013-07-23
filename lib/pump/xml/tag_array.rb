@@ -11,7 +11,11 @@ module Pump
       end
 
       def to_s
-        "#{prefix}<#{name} type=\\\"array\\\"#{loop_and_close_tag}"
+        if options.has_key?(:static_value)
+          "#{prefix}<#{name} type=\\\"array\\\"#{static_value_and_close_tag}"
+        else
+          "#{prefix}<#{name} type=\\\"array\\\"#{loop_and_close_tag}"
+        end
       end
 
       private
@@ -22,6 +26,11 @@ module Pump
 
       def loop_and_close_tag
         "\#{ #{objects_path}.empty? ? \"/>\n\" : \">\n#{tag_loop}#{tabs}</#{name}>\n\" }"
+      end
+
+      def static_value_and_close_tag
+        return "/>\n" if options[:static_value].nil?
+        ">#{options[:static_value]}</#{name}>\n"
       end
 
       def objects_path

@@ -203,11 +203,63 @@ describe Pump::Xml do
       end
     end
 
+    context "with static_value set" do
+      let(:person) { Struct.new(:name, :age, :is_yount).new('Gorbatschow', 82, false) }
+
+      context "replace with other value" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :static_value => 12}]) }
+
+        it "returns given static_value" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n  <age>12</age>\n</person>\n")
+        end
+      end
+
+      context "replace with nil value" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :static_value => nil}]) }
+
+        it "returns given static_value" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n  <age nil=\"true\"/>\n</person>\n")
+        end
+      end
+
+      context "replace with other value but with failed condition" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :static_value => 12, :if => :is_yount}]) }
+
+        it "returns given static_value" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n</person>\n")
+        end
+      end
+
+      context "replace with other value but with succssful condition" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age, :static_value => 12, :unless => :is_yount}]) }
+
+        it "returns given static_value" do
+          xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Gorbatschow</name>\n  <age>12</age>\n</person>\n")
+        end
+      end
+    end
+
     context "deep hash-like nesting" do
       let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}]}], :instruct => false) }
 
       it "returns xml string" do
         xml.encode(person).should eql("<person>\n  <name>Benny</name>\n  <parent>\n    <name>Benny</name>\n    <age>9</age>\n  </parent>\n</person>\n")
+      end
+
+      context "with static_value = nil" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => nil}], :instruct => false) }
+
+        it "uses static value" do
+          xml.encode(person).should eql("<person>\n  <name>Benny</name>\n  <parent nil=\"true\"/>\n</person>\n")
+        end
+      end
+
+      context "with static_value = ''" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => ""}], :instruct => false) }
+
+        it "uses static value" do
+          xml.encode(person).should eql("<person>\n  <name>Benny</name>\n  <parent></parent>\n</person>\n")
+        end
       end
     end
 
@@ -231,6 +283,22 @@ describe Pump::Xml do
 
         it "returns xml string" do
           xml.encode(person).should eql("<person>\n  <name>Gustav</name>\n  <children type=\"array\">\n    <kid>\n      <name>Lilly</name>\n    </kid>\n    <kid>\n      <name>Lena</name>\n    </kid>\n  </children>\n</person>\n")
+        end
+      end
+
+      context "with static_value = nil" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:children => :children,
+                                            :array => [{:name => :name}], :static_value => nil}], :instruct => false) }
+        it "uses static value" do
+          xml.encode(person).should eql("<person>\n  <name>Gustav</name>\n  <children type=\"array\"/>\n</person>\n")
+        end
+      end
+
+      context "with static_value = ''" do
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:children => :children,
+                                            :array => [{:name => :name}], :static_value => ''}], :instruct => false) }
+        it "uses static value" do
+          xml.encode(person).should eql("<person>\n  <name>Gustav</name>\n  <children type=\"array\"></children>\n</person>\n")
         end
       end
     end
