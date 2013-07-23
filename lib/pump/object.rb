@@ -1,3 +1,4 @@
+require 'pump/collection'
 require 'pump/xml'
 require 'active_support/concern'
 
@@ -22,24 +23,6 @@ module Pump
       def add_pump(name, set=nil, options={}, &block)
         pumps.add(set, :xml, Pump::Xml.new(name, options, &block))
       end
-    end
-  end
-
-  class Collection
-    def initialize
-      @pumps = {:xml => {}}
-    end
-
-    def add(set, format, value)
-      @pumps[format][set || :default] = value
-    end
-
-    def get(set, format)
-      @pumps[format][set] || @pumps[format][:default]
-    end
-
-    def size
-      @pumps.values.map(&:size).inject(0) {|sum, it| sum += it; it}
     end
   end
 end
