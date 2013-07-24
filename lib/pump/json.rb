@@ -34,21 +34,35 @@ module Pump
     def build_key_value_pair(str, config, variable='json')
       name, method_name = config.keys.first, config.values.first
       if method_name.is_a?(Array) && !config.has_key?(:static_value)
-        str << "#{build_condition(config)}\n#{variable}[:'#{format_name(name)}'] = {}\n"
-        str << build_string(method_name, "#{variable}[:'#{format_name(name)}']")
-        str << "end\n" if build_condition(config)
+        build_hash(str, name, method_name, config, variable)
       elsif config[:array]
-        str << "#{build_condition(config)}\n#{variable}[:'#{format_name(name)}'] = []\n"
-        unless config.has_key?(:static_value)
-          str << "object.#{method_name}.each do |object| "
-          str << "#{variable}[:'#{format_name(name)}'] << {}\n"
-          str << build_string(config[:array], "#{variable}[:'#{format_name(name)}'][-1]")
-           str << "end\n"
-        end
-        str << "end\n" if build_condition(config)
+        build_array(str, name, method_name, config, variable)
       else
-        str << "#{variable}[:'#{format_name(name)}']=#{build_value(method_name, config)}#{build_condition(config)}\n"
+        build_simple(str, name, method_name, config, variable)
       end
+    end
+
+    def build_hash(str, name, method_name, config, variable)
+      str << "#{build_condition(config)}\n"
+      str << "#{variable}[:'#{format_name(name)}'] = {}\n"
+      str << build_string(method_name, "#{variable}[:'#{format_name(name)}']")
+      str << "end\n" if build_condition(config)
+    end
+
+    def build_array(str, name, method_name, config, variable)
+      str << "#{build_condition(config)}\n"
+      str << "#{variable}[:'#{format_name(name)}'] = []\n"
+      unless config.has_key?(:static_value)
+        str << "object.#{method_name}.each do |object| "
+        str << "#{variable}[:'#{format_name(name)}'] << {}\n"
+        str << build_string(config[:array], "#{variable}[:'#{format_name(name)}'][-1]")
+        str << "end\n"
+      end
+      str << "end\n" if build_condition(config)
+    end
+
+    def build_simple(str, name, method_name, config, variable)
+      str << "#{variable}[:'#{format_name(name)}']=#{build_value(method_name, config)}#{build_condition(config)}\n"
     end
 
     def build_value(method_name, config)
