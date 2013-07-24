@@ -115,7 +115,7 @@ Benchmark.bmbm { |x|
   if defined?(Oj)
     x.report("Oj") {
       times.times {
-        Oj.dump(array.map(&:attributes))
+        Oj.dump(array.map(&:attributes), :mode => :compat)
       }
     }
   end

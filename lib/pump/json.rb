@@ -37,7 +37,7 @@ module Pump
             #{build_direct_string(all_config_for_direct)}
           }
           #{build_string(all_config_for_indirect)}
-          Oj.dump({ '#{format_name(root_name)}' => json })
+          Oj.dump({ :'#{format_name(root_name)}' => json }, :mode => :compat)
         end
 
         def encode_array(objects)
@@ -46,8 +46,8 @@ module Pump
               #{build_direct_string(all_config_for_direct)}
             }
             #{build_string(all_config_for_indirect)}
-            { '#{format_name(root_name)}' => json }
-          end)
+            { :'#{format_name(root_name)}' => json }
+          end, :mode => :compat)
         end
       EOV
     end
@@ -80,26 +80,26 @@ module Pump
 
     def build_direct_key_value_pair(str, config)
       name, method_name = config.keys.first, config.values.first
-      str << "'#{format_name(name)}'=>#{build_value(method_name, config)}"
+      str << ":'#{format_name(name)}'=>#{build_value(method_name, config)}"
     end
 
     def build_key_value_pair(str, config, variable='json')
       name, method_name = config.keys.first, config.values.first
       if method_name.is_a?(Array) && !config.has_key?(:static_value)
-        str << "#{build_condition(config)}\n#{variable}['#{format_name(name)}'] = {}\n"
-        str << build_string(method_name, "#{variable}['#{format_name(name)}']")
+        str << "#{build_condition(config)}\n#{variable}[:'#{format_name(name)}'] = {}\n"
+        str << build_string(method_name, "#{variable}[:'#{format_name(name)}']")
         str << "end\n" if build_condition(config)
       elsif config[:array]
-        str << "#{build_condition(config)}\n#{variable}['#{format_name(name)}'] = []\n"
+        str << "#{build_condition(config)}\n#{variable}[:'#{format_name(name)}'] = []\n"
         unless config.has_key?(:static_value)
           str << "object.#{method_name}.each do |object| "
-          str << "#{variable}['#{format_name(name)}'] << {}\n"
-          str << build_string(config[:array], "#{variable}['#{format_name(name)}'][-1]")
+          str << "#{variable}[:'#{format_name(name)}'] << {}\n"
+          str << build_string(config[:array], "#{variable}[:'#{format_name(name)}'][-1]")
            str << "end\n"
         end
         str << "end\n" if build_condition(config)
       else
-        str << "#{variable}['#{format_name(name)}']=#{build_value(method_name, config)}#{build_condition(config)}\n"
+        str << "#{variable}[:'#{format_name(name)}']=#{build_value(method_name, config)}#{build_condition(config)}\n"
       end
     end
 
