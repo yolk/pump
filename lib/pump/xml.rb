@@ -1,7 +1,7 @@
 require "pump/xml/tag"
 require "pump/xml/value"
 require "pump/xml/tag_array"
-require "pump/xml/dsl"
+require "pump/dsl"
 require 'active_support/core_ext/string/inflections'
 
 module Pump
@@ -31,14 +31,14 @@ module Pump
     # @param [String, Symbol] root_tag_name     the name of the used root tag
     # @param [Array<Hash>] tag_config           optional config for all tags
     # @param [Hash] options                     optional options for the whole encoder
-    # @yield an optional block to create the encoder with the Pump::Xml::Dsl
+    # @yield an optional block to create the encoder with the Pump::Dsl
     #
     # @return [self]
     def initialize(root_tag_name, tag_config=nil, options={}, &blk)
       unless Array === tag_config
         raise ArgumentError unless block_given?
         @options = tag_config || {}
-        @tag_config = Dsl.new(&blk).config
+        @tag_config = Pump::Dsl.new(&blk).config
       else
         @tag_config    = tag_config
         @options       = options

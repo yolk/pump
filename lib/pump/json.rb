@@ -1,4 +1,5 @@
 require 'multi_json'
+require "pump/dsl"
 
 module Pump
   class Json
@@ -6,9 +7,15 @@ module Pump
     attr_reader :root_name, :config, :options
 
     def initialize(root_name, config=nil, options={}, &blk)
+      unless Array === config
+        raise ArgumentError unless block_given?
+        @options = config || {}
+        @config = Pump::Dsl.new(&blk).config
+      else
+        @config    = config
+        @options   = options
+      end
       @root_name = root_name
-      @config = config
-      @options = options
 
       compile
     end
