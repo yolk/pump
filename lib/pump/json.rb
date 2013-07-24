@@ -1,34 +1,10 @@
-require "pump/dsl"
+require "pump/encoder"
 require "oj"
 
 module Pump
-  class Json
-
-    attr_reader :root_name, :config, :options
-
-    def initialize(root_name, config=nil, options={}, &blk)
-      unless Array === config
-        raise ArgumentError unless block_given?
-        @options = config || {}
-        @config = Pump::Dsl.new(&blk).config
-      else
-        @config    = config
-        @options   = options
-      end
-      @root_name = root_name
-
-      compile
-    end
-
-    def encode(object)
-      object.is_a?(Array) ? encode_array(object) : encode_single(object)
-    end
+  class Json < Encoder
 
     private
-
-    def compile
-      instance_eval(compile_string)
-    end
 
     def compile_string
       <<-EOV
@@ -53,13 +29,13 @@ module Pump
     end
 
     def all_config_for_direct
-      config.find_all{|it|
+      encoder_config.find_all{|it|
         !it[:if] && !it[:unless] && !it[:array] && !it.values.first.is_a?(Array)
       }
     end
 
     def all_config_for_indirect
-      config.find_all{|it|
+      encoder_config.find_all{|it|
         it[:if] || it[:unless] || it[:array] || it.values.first.is_a?(Array)
       }
     end
@@ -117,7 +93,7 @@ module Pump
     end
 
     def format_name(name)
-      return name if options[:underscore] == false
+      return name if encoder_options[:underscore] == false
       name.to_s.underscore
     end
   end
