@@ -51,8 +51,8 @@ module Pump
     #    to all methods configured during initalization of the Pump::Xml instance.
     #
     # @return [String]
-    def encode(object)
-      object.is_a?(Array) ? encode_array(object) : encode_single(object)
+    def encode(object, options={})
+      object.is_a?(Array) ? encode_array(object, options) : encode_single(object, options)
     end
 
     private

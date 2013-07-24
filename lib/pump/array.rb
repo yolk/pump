@@ -3,13 +3,13 @@ module Pump
     def pump_to_xml(options={})
       encoder = get_pump_encoder(options[:set], :xml)
       return to_xml(options) unless encoder
-      encoder.encode(self)
+      encoder.encode(self, options)
     end
 
     def pump_to_json(options={})
       encoder = get_pump_encoder(options[:set], :json)
       return to_json(options) unless encoder
-      encoder.encode(self)
+      encoder.encode(self, options)
     end
 
     private

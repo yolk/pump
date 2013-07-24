@@ -8,11 +8,11 @@ module Pump
 
     def compile_string
       <<-EOV
-        def encode_single(object)
+        def encode_single(object, options)
           "#{Tag.new(root_name, {}, sub_tags, tag_options)}"
         end
 
-        def encode_array(objects)
+        def encode_array(objects, options)
           "#{TagArray.new(root_name, {}, sub_tags, tag_options)}"
         end
       EOV

@@ -8,17 +8,28 @@ module Pump
 
     def compile_string
       <<-EOV
-        def encode_single(object)
+        def encode_single(object, options)
           json = {}
           #{build_string(encoder_config)}
-          Oj.dump({ :'#{format_name(root_name)}' => json }, :mode => :compat)
+          unless options[:exclude_root_in_json]
+            json = { :'#{format_name(root_name)}' => json }
+          end
+          Oj.dump(json, :mode => :compat)
         end
 
-        def encode_array(objects)
-          Oj.dump(objects.map do |object|
-            json = {}
-            #{build_string(encoder_config)}
-            { :'#{format_name(root_name)}' => json }
+        def encode_array(objects, options)
+          Oj.dump(if options[:exclude_root_in_json]
+            objects.map do |object|
+              json = {}
+              #{build_string(encoder_config)}
+              json
+            end
+          else
+            objects.map do |object|
+              json = {}
+              #{build_string(encoder_config)}
+              { :'#{format_name(root_name)}' => json }
+            end
           end, :mode => :compat)
         end
       EOV

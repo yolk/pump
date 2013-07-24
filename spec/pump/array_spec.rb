@@ -97,5 +97,9 @@ describe Pump::Array do
     it "should encode json with default encoder on unknown set" do
       subject.pump_to_json(:set => :bla).should eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
     end
+
+    it "should pass down options to encoder" do
+      subject.pump_to_json(:exclude_root_in_json => true).should eql("[{\"name\":\"Tintin\"}]")
+    end
   end
 end

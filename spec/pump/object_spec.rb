@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-class ObjectWithoutInclude
-
-end
+class ObjectWithoutInclude;end
 
 class ObjectWithInclude
   include Pump::Object
@@ -118,6 +116,10 @@ describe Pump::Object do
 
     it "should return json on pump_to_json" do
       subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\"}}")
+    end
+
+    it "should pass down options to encoder" do
+      subject.new.pump_to_json(:exclude_root_in_json => true).should eql("{\"name\":\"MyName\"}")
     end
   end
 

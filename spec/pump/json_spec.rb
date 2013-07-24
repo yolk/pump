@@ -30,6 +30,12 @@ describe Pump::Json do
         it "returns xml string" do
           json.encode(people).should eql("[{\"person\":{\"name\":\"Benny\"}},{\"person\":{\"name\":\"Carlo\"}}]")
         end
+
+        context "with exclude_root_in_json option" do
+          it "returns json string without root" do
+            json.encode(people, :exclude_root_in_json => true).should eql("[{\"name\":\"Benny\"},{\"name\":\"Carlo\"}]")
+          end
+        end
       end
 
       context "with empty array" do
@@ -200,6 +206,12 @@ describe Pump::Json do
         it "returns json string with underscores" do
           json.encode(person).should eql("{\"my_person\":{\"first_name\":\"Benny\"}}")
         end
+      end
+    end
+
+    context "with exclude_root_in_json option" do
+      it "returns json string without root" do
+        json.encode(person, :exclude_root_in_json => true).should eql("{\"name\":\"Benny\"}")
       end
     end
   end
