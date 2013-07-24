@@ -49,6 +49,32 @@ class ObjectWithIncludeAndMultiplePumps
   end
 end
 
+class ObjectWithIncludeAndMultiplePumpsWithInheritance
+  include Pump::Object
+
+  add_pump :my_object do
+    string  "name"
+    string "role"
+  end
+
+  add_pump :my_object, :restricted, :base => :default do
+    integer  "age"
+    string "role", :static_value => "basic_role"
+  end
+
+  def name
+    "MyName"
+  end
+
+  def role
+    "my_role"
+  end
+
+  def age
+    72
+  end
+end
+
 describe Pump::Object do
   it "should not extend all objects by default" do
     ObjectWithoutInclude.respond_to?(:pumps).should eql(false)
@@ -125,6 +151,29 @@ describe Pump::Object do
     it "should return default json on pump_to_json with unknown set option" do
       subject.new.pump_to_json(:set => :unknown).should eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
+  end
 
+  context "when included with multiple encoders added with inheritance" do
+    subject { ObjectWithIncludeAndMultiplePumpsWithInheritance }
+
+    it "should add pumps" do
+      subject.pumps.size.should eql(2)
+    end
+
+    it "should return default xml on pump_to_xml" do
+      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n  <role>my_role</role>\n</my_object>\n")
+    end
+
+    it "should return default json on pump_to_json" do
+      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"my_role\"}}")
+    end
+
+    it "should return special inherited xml on pump_to_xml(:set => :restricted)" do
+      subject.new.pump_to_xml(:set => :restricted).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n  <role>basic_role</role>\n  <age type=\"integer\">72</age>\n</my_object>\n")
+    end
+
+    it "should return special inherited json on pump_to_json(:set => :restricted)" do
+      subject.new.pump_to_json(:set => :restricted).should eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"basic_role\",\"age\":72}}")
+    end
   end
 end
