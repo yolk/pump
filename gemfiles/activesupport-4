@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gem "activemodel", "4.0"
+gem "oj"
 
 gem 'rspec', '>= 2.4.0'
 gem 'rake'
