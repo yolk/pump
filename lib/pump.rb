@@ -1,5 +1,6 @@
 require "pump/version"
 require "pump/xml"
+require "pump/json"
 require "pump/object"
 require "pump/array"
 
