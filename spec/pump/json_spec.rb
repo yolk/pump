@@ -200,8 +200,8 @@ describe Pump::Json do
       context "not set" do
         let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}]) }
 
-        it "returns json string with dashes" do
-          json.encode(person).should eql("{\"my-person\":{\"first-name\":\"Benny\"}}")
+        it "returns json string with underscores" do
+          json.encode(person).should eql("{\"my_person\":{\"first_name\":\"Benny\"}}")
         end
       end
 
@@ -216,7 +216,7 @@ describe Pump::Json do
       context "set to true" do
         let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}], :underscore => true) }
 
-        it "returns json string with dashes" do
+        it "returns json string with underscores" do
           json.encode(person).should eql("{\"my_person\":{\"first_name\":\"Benny\"}}")
         end
       end

@@ -86,8 +86,8 @@ module Pump
     end
 
     def format_name(name)
-      return name unless options[:underscore]
-      name.underscore
+      return name if options[:underscore] == false
+      name.to_s.underscore
     end
   end
 end
