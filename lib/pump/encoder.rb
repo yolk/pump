@@ -2,7 +2,7 @@ require "pump/dsl"
 
 module Pump
   class Encoder
-    attr_reader :root_name, :encoder_config, :encoder_options
+    attr_reader :root_name, :encoder_config, :encoder_options, :base
 
     # Creates a new XML-encoder with a root tag named after +root_name+.
     #
@@ -30,15 +30,16 @@ module Pump
     #
     # @return [self]
     def initialize(root_name, encoder_config=nil, encoder_options={}, &blk)
-      unless Array === encoder_config
+      if encoder_config.is_a?(Array)
+        @encoder_config  = encoder_config
+        @encoder_options = encoder_options || {}
+      else
         raise ArgumentError unless block_given?
         @encoder_options = encoder_config || {}
         @encoder_config = Pump::Dsl.new(&blk).config
-      else
-        @encoder_config  = encoder_config
-        @encoder_options         = encoder_options
       end
       @root_name = root_name
+      merge_base
 
       compile
     end
@@ -57,7 +58,35 @@ module Pump
     private
 
     def compile
-      instance_eval(compile_string)
+      compile_string && instance_eval(compile_string)
+    end
+
+    def compile_string;end
+
+    def merge_base
+      return unless @encoder_options[:base]
+      @base = @encoder_options.delete(:base)
+
+      merge_base_config
+      merge_base_options
+    end
+
+    def merge_base_config
+      original_encoder_config = @encoder_config
+      @encoder_config = base.encoder_config.dup
+      original_encoder_config.each do |it|
+        key = it.keys.first
+        index = @encoder_config.index{|config| config.keys.first == key}
+        if index
+          @encoder_config[index] = it
+        else
+          @encoder_config.push(it)
+        end
+      end
+    end
+
+    def merge_base_options
+      encoder_options.merge!(base.encoder_options) { |key, v1, v2| v1 }
     end
   end
 end

@@ -1,25 +1,6 @@
 require 'spec_helper'
 
 describe Pump::Json do
-  describe ".new" do
-    it "requires two parameters or one and a block" do
-      lambda{ Pump::Json.new }.should raise_error(ArgumentError)
-      lambda{ Pump::Json.new('record') }.should raise_error(ArgumentError)
-      lambda{ Pump::Json.new('record', []) }.should_not raise_error
-      lambda{ Pump::Json.new('record') {} }.should_not raise_error
-    end
-
-    describe "with block given" do
-      subject do
-        Pump::Json.new('human') do
-          tag :name
-        end.encode(Struct.new(:name).new('Artur'))
-      end
-
-      its(:encode) { should eql("{\"human\":{\"name\":\"Artur\"}}")}
-    end
-  end
-
   describe "#encode" do
     let(:person) { Struct.new(:name, :age, :last_name).new('Benny', 9, 'Hellman') }
     let(:json) { Pump::Json.new('person', [{:name => :name}]) }
