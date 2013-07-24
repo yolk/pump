@@ -7,10 +7,10 @@ require 'pump'
 require 'ox'
 require 'oj'
 require 'active_model'
-require 'active_support/core_ext/object/to_json'
 
 class Person < Struct.new(:name, :age, :created_at)
   include ActiveModel::Serializers::Xml if defined?(ActiveModel)
+  include ActiveModel::Serializers::JSON if defined?(ActiveModel)
 
   def attributes
     {'name' => name, 'age' => age, 'created_at' => created_at}
