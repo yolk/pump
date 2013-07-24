@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Pump::VERSION
   gem.authors       = ["Sebastian Munz"]
   gem.email         = ["sebastian@yo.lk"]
-  gem.description   = %q{Fast but inflexible XML encoding for ruby objects.}
-  gem.summary       = %q{Fast but inflexible XML encoding for ruby objects.}
+  gem.description   = %q{Fast but inflexible XML and JSON encoding for ruby objects.}
+  gem.summary       = %q{Fast but inflexible XML and JSON encoding for ruby objects.}
   gem.homepage      = "https://github.com/yolk/pump"
   gem.license       = 'MIT'
 

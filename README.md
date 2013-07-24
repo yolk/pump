@@ -1,6 +1,6 @@
 # Pump
 
-Fast but inflexible XML encoding for ruby objects.
+Fast but inflexible XML and JSON encoding for ruby objects.
 
 ## Quick benchmark
 
