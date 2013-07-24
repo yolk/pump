@@ -51,11 +51,11 @@ describe Pump::Array do
     subject{ [ArrayObjectWithoutInclude.new] }
 
     it "should return default to_xml" do
-      subject.pump_to_xml.should eql("<Array#to_xml />")
+      subject.pump_to_xml.should eql(subject.to_xml)
     end
 
     it "should return default to_json" do
-      subject.pump_to_json.should eql("{Array#to_json}")
+      subject.pump_to_json.should eql(subject.to_json)
     end
   end
 
@@ -63,11 +63,11 @@ describe Pump::Array do
     subject{ [ArrayObjectWithInclude.new] }
 
     it "should return default to_xml" do
-      subject.pump_to_xml.should eql("<Array#to_xml />")
+      subject.pump_to_xml.should eql(subject.to_xml)
     end
 
     it "should return default to_json" do
-      subject.pump_to_json.should eql("{Array#to_json}")
+      subject.pump_to_json.should eql(subject.to_json)
     end
   end
 
