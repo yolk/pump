@@ -4,8 +4,10 @@ require 'rubygems'
 require 'benchmark'
 
 require 'pump'
-require 'ox' rescue nil
-require 'active_model' rescue nil
+require 'ox'
+require 'oj'
+require 'active_model'
+require 'active_support/core_ext/object/to_json'
 
 class Person < Struct.new(:name, :age, :created_at)
   include ActiveModel::Serializers::Xml if defined?(ActiveModel)
@@ -14,6 +16,12 @@ class Person < Struct.new(:name, :age, :created_at)
     {'name' => name, 'age' => age, 'created_at' => created_at}
   end
 end
+
+pump_json = Pump::Json.new('person', [
+  {:age => :age, :attributes => {:type => 'integer'}},
+  {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true},
+  {:name => :name}
+])
 
 # Not optimized pump
 pump = Pump::Xml.new('person', [
@@ -77,6 +85,12 @@ puts "Starting benchmark serializing array with #{array.size} entries #{times} t
 
 Benchmark.bmbm { |x|
 
+  x.report("Pump::Json#encode") {
+    times.times {
+      pump_json.encode(array)
+    }
+  }
+
   x.report("Pump::Xml#encode") {
     times.times {
       pump.encode(array)
@@ -97,10 +111,24 @@ Benchmark.bmbm { |x|
     }
   end
 
+  if defined?(Oj)
+    x.report("Oj") {
+      times.times {
+        Oj.dump(array.map(&:attributes))
+      }
+    }
+  end
+
   if defined?(ActiveModel)
-    x.report("ActiveModel#serialize") {
+    x.report("ActiveModel#to_xml") {
       times.times {
         array.to_xml
+      }
+    }
+
+    x.report("ActiveModel#to_json") {
+      times.times {
+        array.to_json
       }
     }
   end
