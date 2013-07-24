@@ -9,42 +9,19 @@ module Pump
     def compile_string
       <<-EOV
         def encode_single(object)
-          json = {
-            #{build_direct_string(all_config_for_direct)}
-          }
-          #{build_string(all_config_for_indirect)}
+          json = {}
+          #{build_string(encoder_config)}
           Oj.dump({ :'#{format_name(root_name)}' => json }, :mode => :compat)
         end
 
         def encode_array(objects)
           Oj.dump(objects.map do |object|
-            json = {
-              #{build_direct_string(all_config_for_direct)}
-            }
-            #{build_string(all_config_for_indirect)}
+            json = {}
+            #{build_string(encoder_config)}
             { :'#{format_name(root_name)}' => json }
           end, :mode => :compat)
         end
       EOV
-    end
-
-    def all_config_for_direct
-      encoder_config.find_all{|it|
-        !it[:if] && !it[:unless] && !it[:array] && !it.values.first.is_a?(Array)
-      }
-    end
-
-    def all_config_for_indirect
-      encoder_config.find_all{|it|
-        it[:if] || it[:unless] || it[:array] || it.values.first.is_a?(Array)
-      }
-    end
-
-    def build_direct_string(config)
-      config.inject([]) do |str, config|
-        build_direct_key_value_pair(str, config)
-        str
-      end.join(",")
     end
 
     def build_string(config, variable='json')
@@ -52,11 +29,6 @@ module Pump
         build_key_value_pair(str, config, variable)
         str
       end
-    end
-
-    def build_direct_key_value_pair(str, config)
-      name, method_name = config.keys.first, config.values.first
-      str << ":'#{format_name(name)}'=>#{build_value(method_name, config)}"
     end
 
     def build_key_value_pair(str, config, variable='json')
