@@ -4,6 +4,10 @@ class Array
   def to_xml(options={})
     "<Array#to_xml />"
   end
+
+  def to_json(options={})
+    "{Array#to_json}"
+  end
 end
 
 class ArrayObjectWithoutInclude
@@ -39,11 +43,19 @@ describe Pump::Array do
     [].respond_to?(:pump_to_xml).should eql(true)
   end
 
+  it "should extend ::Array by default with pump_to_json" do
+    [].respond_to?(:pump_to_json).should eql(true)
+  end
+
   context "with objects without include" do
     subject{ [ArrayObjectWithoutInclude.new] }
 
     it "should return default to_xml" do
       subject.pump_to_xml.should eql("<Array#to_xml />")
+    end
+
+    it "should return default to_json" do
+      subject.pump_to_json.should eql("{Array#to_json}")
     end
   end
 
@@ -52,6 +64,10 @@ describe Pump::Array do
 
     it "should return default to_xml" do
       subject.pump_to_xml.should eql("<Array#to_xml />")
+    end
+
+    it "should return default to_json" do
+      subject.pump_to_json.should eql("{Array#to_json}")
     end
   end
 
@@ -68,6 +84,18 @@ describe Pump::Array do
 
     it "should encode with default encoder on unknown set" do
       subject.pump_to_xml(:set => :bla).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n  </array-object>\n</array-objects>\n")
+    end
+
+    it "should encode json with default encoder" do
+      subject.pump_to_json.should eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
+    end
+
+    it "should encode json with specified encoder" do
+      subject.pump_to_json(:set => :with_age).should eql("[{\"array_object\":{\"name\":\"Tintin\",\"age\":27}}]")
+    end
+
+    it "should encode json with default encoder on unknown set" do
+      subject.pump_to_json(:set => :bla).should eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
     end
   end
 end

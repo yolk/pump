@@ -11,7 +11,16 @@ module Pump
       if encoder
         encoder.encode(self)
       else
-        self.to_xml(options)
+        to_xml(options)
+      end
+    end
+
+    def pump_to_json(options={})
+      encoder = self.class.pumps.get(options[:set], :json)
+      if encoder
+        encoder.encode(self)
+      else
+        to_json(options)
       end
     end
 
@@ -22,6 +31,7 @@ module Pump
 
       def add_pump(name, set=nil, options={}, &block)
         pumps.add(set, :xml, Pump::Xml.new(name, options, &block))
+        pumps.add(set, :json, Pump::Json.new(name, options, &block))
       end
     end
   end

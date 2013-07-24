@@ -10,6 +10,10 @@ class ObjectWithInclude
   def to_xml(options={})
     "<to_xml />"
   end
+
+  def to_json(options={})
+    "{to_json}"
+  end
 end
 
 class ObjectWithIncludeAndPumps
@@ -62,8 +66,16 @@ describe Pump::Object do
       subject.new.respond_to?(:pump_to_xml).should eql(true)
     end
 
+    it "should add pump_to_json instance method" do
+      subject.new.respond_to?(:pump_to_json).should eql(true)
+    end
+
     it "should fall back to original to_xml on pump_to_xml" do
       subject.new.pump_to_xml.should eql("<to_xml />")
+    end
+
+    it "should fall back to original to_json on pump_to_xml" do
+      subject.new.pump_to_json.should eql("{to_json}")
     end
   end
 
@@ -76,6 +88,10 @@ describe Pump::Object do
 
     it "should return xml on pump_to_xml" do
       subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n</my_object>\n")
+    end
+
+    it "should return json on pump_to_json" do
+      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
   end
 
@@ -96,6 +112,18 @@ describe Pump::Object do
 
     it "should return default xml on pump_to_xml with unknown set option" do
       subject.new.pump_to_xml(:set => :unknown).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n</my_object>\n")
+    end
+
+    it "should return default json on pump_to_json" do
+      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\"}}")
+    end
+
+    it "should return special json on set option" do
+      subject.new.pump_to_json(:set => :sometimes).should eql("{\"my_object\":{\"name\":\"MyName\",\"age\":72}}")
+    end
+
+    it "should return default json on pump_to_json with unknown set option" do
+      subject.new.pump_to_json(:set => :unknown).should eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
 
   end

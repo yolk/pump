@@ -6,6 +6,12 @@ module Pump
       encoder.encode(self)
     end
 
+    def pump_to_json(options={})
+      encoder = get_pump_encoder(options[:set], :json)
+      return to_json(options) unless encoder
+      encoder.encode(self)
+    end
+
     private
 
     def get_pump_encoder(set, format)
