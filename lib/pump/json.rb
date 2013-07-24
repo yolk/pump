@@ -21,12 +21,7 @@ module Pump
     end
 
     def encode(object)
-      data = if Array === object
-        object.map{|obj| encode_single(obj)}
-      else
-        encode_single(object)
-      end
-      Oj.dump(data)
+      object.is_a?(Array) ? encode_array(object) : encode_single(object)
     end
 
     private
@@ -42,7 +37,17 @@ module Pump
             #{build_direct_string(all_config_for_direct)}
           }
           #{build_string(all_config_for_indirect)}
-          { '#{format_name(root_name)}' => json }
+          Oj.dump({ '#{format_name(root_name)}' => json })
+        end
+
+        def encode_array(objects)
+          Oj.dump(objects.map do |object|
+            json = {
+              #{build_direct_string(all_config_for_direct)}
+            }
+            #{build_string(all_config_for_indirect)}
+            { '#{format_name(root_name)}' => json }
+          end)
         end
       EOV
     end

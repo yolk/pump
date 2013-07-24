@@ -6,6 +6,7 @@ require 'benchmark'
 require 'pump'
 require 'ox'
 require 'oj'
+require 'yajl'
 require 'active_model'
 
 class Person < Struct.new(:name, :age, :created_at)
@@ -115,6 +116,14 @@ Benchmark.bmbm { |x|
     x.report("Oj") {
       times.times {
         Oj.dump(array.map(&:attributes))
+      }
+    }
+  end
+
+  if defined?(Yajl)
+    x.report("Yajl") {
+      times.times {
+        Yajl::Encoder.encode(array.map(&:attributes))
       }
     }
   end
