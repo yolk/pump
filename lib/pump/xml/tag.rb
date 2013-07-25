@@ -29,7 +29,7 @@ module Pump
       end
 
       def open_tag
-        "#{prefix}<#{name}#{attributes_string}"
+        "#{prefix}<#{format_name(name)}#{attributes_string}"
       end
 
       def prefix
@@ -42,7 +42,7 @@ module Pump
 
       def value_and_close_tag(path=nil)
         value = value_nodes? ? nodes.first.to_s(path) : ("\n" << nodes.map(&:to_s).join)
-        ">#{value}#{tabs unless value_nodes?}</#{name}>\n"
+        ">#{value}#{tabs unless value_nodes?}</#{format_name(name)}>\n"
       end
 
       def value_and_close_tag_with_nil_check
@@ -51,7 +51,7 @@ module Pump
 
       def static_value_and_close_tag
         return " nil=\\\"true\\\"/>\n" if options[:static_value].nil?
-        ">#{options[:static_value]}</#{name}>\n"
+        ">#{options[:static_value]}</#{format_name(name)}>\n"
       end
 
       def attributes_string

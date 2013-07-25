@@ -283,5 +283,54 @@ describe Pump::Xml do
         end
       end
     end
+
+    context "with :xml_key_style option" do
+      context "not set" do
+        let(:xml) { Pump::Xml.new('my_person', [{"first_name" => :name}]) }
+
+        it "returns xml string with dashes" do
+          xml.encode(person).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-person>\n  <first-name>Benny</first-name>\n</my-person>\n")
+        end
+      end
+
+      context "set to :dashes" do
+        let(:xml) { Pump::Xml.new('my_person', [{"first-name" => :name}], :xml_key_style => :dashes) }
+
+        it "returns xml string with dashes" do
+          xml.encode(person).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-person>\n  <first-name>Benny</first-name>\n</my-person>\n")
+        end
+      end
+
+      context "set to :underscores" do
+        let(:xml) { Pump::Xml.new('my_person', [{"first-name" => :name}], :xml_key_style => :underscores) }
+
+        it "returns xml string with underscores" do
+          xml.encode(person).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_person>\n  <first_name>Benny</first_name>\n</my_person>\n")
+        end
+
+        context "on complex array like" do
+          let(:person) {
+            Struct.new(:name, :children).new('Gustav', [
+              Struct.new(:name).new('Lilly'),
+              Struct.new(:name).new('Lena')
+          ]) }
+
+          let(:xml) { Pump::Xml.new('my-person', [{:"my-name" => :name}, {:"the-children" => :children,
+                                                :array => [{:"child-name" => :name}]}], :xml_key_style => :underscores) }
+
+          it "returns xml string with underscores" do
+            xml.encode(person).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_person>\n  <my_name>Gustav</my_name>\n  <the_children type=\"array\">\n    <the_child>\n      <child_name>Lilly</child_name>\n    </the_child>\n    <the_child>\n      <child_name>Lena</child_name>\n    </the_child>\n  </the_children>\n</my_person>\n")
+          end
+        end
+
+        context "on complex array like" do
+          let(:xml) { Pump::Xml.new('a-person', [{:"my-name" => :name}, {:"the-parent" => [{:"a-name" => :name}, {:"la-age" => :age}]}], :xml_key_style => :underscores) }
+
+          it "returns xml string with underscores" do
+            xml.encode(person).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<a_person>\n  <my_name>Benny</my_name>\n  <the_parent>\n    <a_name>Benny</a_name>\n    <la_age>9</la_age>\n  </the_parent>\n</a_person>\n")
+          end
+        end
+      end
+    end
   end
 end

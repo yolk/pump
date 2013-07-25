@@ -27,18 +27,25 @@ module Pump
     def build_tag(config)
       tag_name, method_name = config.keys.first, config.values.first
       attrs = config[:attributes]
+      options = config.merge({:xml_key_style => encoder_options[:xml_key_style]})
       if method_name.is_a?(Array)
-        Tag.new(tag_name, attrs, method_name.map{|conf| build_tag(conf) }, config)
+        Tag.new(tag_name, attrs, method_name.map{|conf| build_tag(conf) }, options)
       elsif config[:array]
-        config.merge!(:array_method => method_name, :array_root => tag_name)
-        TagArray.new(config[:child_root] || tag_name.to_s.singularize, attrs, config[:array].map{|conf| build_tag(conf) }, config)
+        options.merge!(:array_method => method_name, :array_root => tag_name)
+        child_root = config[:child_root] || tag_name.to_s.singularize
+        tags = config[:array].map{|conf| build_tag(conf) }
+        TagArray.new(child_root, attrs, tags, options)
       else
-        Tag.new(tag_name, attrs, Value.new(method_name), config)
+        Tag.new(tag_name, attrs, Value.new(method_name), options)
       end
     end
 
     def tag_options
-      {:instruct => add_instruct?, :extra_indent => encoder_options[:extra_indent], :array_root => encoder_options[:array_root] }
+      {
+        :instruct => add_instruct?, :extra_indent => encoder_options[:extra_indent],
+        :array_root => encoder_options[:array_root],
+        :xml_key_style => encoder_options[:xml_key_style]
+      }
     end
 
     def add_instruct?

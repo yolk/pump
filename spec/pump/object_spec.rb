@@ -111,7 +111,7 @@ describe Pump::Object do
     end
 
     it "should return xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n</my_object>\n")
+      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return json on pump_to_json" do
@@ -131,15 +131,15 @@ describe Pump::Object do
     end
 
     it "should return default xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n</my_object>\n")
+      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return special xml on set option" do
-      subject.new.pump_to_xml(:set => :sometimes).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n  <age type=\"integer\">72</age>\n</my_object>\n")
+      subject.new.pump_to_xml(:set => :sometimes).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <age type=\"integer\">72</age>\n</my-object>\n")
     end
 
     it "should return default xml on pump_to_xml with unknown set option" do
-      subject.new.pump_to_xml(:set => :unknown).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n</my_object>\n")
+      subject.new.pump_to_xml(:set => :unknown).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return default json on pump_to_json" do
@@ -163,7 +163,7 @@ describe Pump::Object do
     end
 
     it "should return default xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n  <role>my_role</role>\n</my_object>\n")
+      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>my_role</role>\n</my-object>\n")
     end
 
     it "should return default json on pump_to_json" do
@@ -171,7 +171,7 @@ describe Pump::Object do
     end
 
     it "should return special inherited xml on pump_to_xml(:set => :restricted)" do
-      subject.new.pump_to_xml(:set => :restricted).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my_object>\n  <name>MyName</name>\n  <role>basic_role</role>\n  <age type=\"integer\">72</age>\n</my_object>\n")
+      subject.new.pump_to_xml(:set => :restricted).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>basic_role</role>\n  <age type=\"integer\">72</age>\n</my-object>\n")
     end
 
     it "should return special inherited json on pump_to_json(:set => :restricted)" do

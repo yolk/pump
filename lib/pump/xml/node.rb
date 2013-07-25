@@ -24,6 +24,7 @@ module Pump
       def add_node(node)
         node.level = level + 1
         node.options[:extra_indent] = options[:extra_indent]
+        node.options[:xml_key_style] = options[:xml_key_style]
         nodes << node
       end
 
@@ -37,6 +38,11 @@ module Pump
 
       def extra_indent
         options[:extra_indent] || 0
+      end
+
+      def format_name(name)
+        return name.to_s.underscore if options[:xml_key_style] == :underscores
+        name.to_s.dasherize
       end
     end
   end

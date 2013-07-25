@@ -5,16 +5,19 @@ module Pump
   class Xml
     class TagArray < Node
       def initialize(name, attributes={}, nodes=[], options={})
-        tag = Tag.new(name, attributes, nodes, {:level => 1, :extra_indent => options[:extra_indent]})
+        tag = Tag.new(name, attributes, nodes, {
+          :level => 1, :extra_indent => options[:extra_indent],
+          :xml_key_style => options[:xml_key_style]
+        })
         array_root = options[:array_root] || name.to_s.pluralize
         super(array_root, {}, [tag], options)
       end
 
       def to_s
         if options.has_key?(:static_value)
-          "#{prefix}<#{name} type=\\\"array\\\"#{static_value_and_close_tag}"
+          "#{prefix}<#{format_name name} type=\\\"array\\\"#{static_value_and_close_tag}"
         else
-          "#{prefix}<#{name} type=\\\"array\\\"#{loop_and_close_tag}"
+          "#{prefix}<#{format_name name} type=\\\"array\\\"#{loop_and_close_tag}"
         end
       end
 
@@ -25,12 +28,12 @@ module Pump
       end
 
       def loop_and_close_tag
-        "\#{ #{objects_path}.empty? ? \"/>\n\" : \">\n#{tag_loop}#{tabs}</#{name}>\n\" }"
+        "\#{ #{objects_path}.empty? ? \"/>\n\" : \">\n#{tag_loop}#{tabs}</#{format_name name}>\n\" }"
       end
 
       def static_value_and_close_tag
         return "/>\n" if options[:static_value].nil?
-        ">#{options[:static_value]}</#{name}>\n"
+        ">#{options[:static_value]}</#{format_name name}>\n"
       end
 
       def objects_path
