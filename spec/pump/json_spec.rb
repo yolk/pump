@@ -183,7 +183,7 @@ describe Pump::Json do
       end
     end
 
-    context "with underscore option" do
+    context "with :json_key_style option" do
       context "not set" do
         let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}]) }
 
@@ -192,16 +192,16 @@ describe Pump::Json do
         end
       end
 
-      context "set to false" do
-        let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}], :underscore => false) }
+      context "set to :dashes" do
+        let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}], :json_key_style => :dashes) }
 
         it "returns json string with dashes" do
           json.encode(person).should eql("{\"my-person\":{\"first-name\":\"Benny\"}}")
         end
       end
 
-      context "set to true" do
-        let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}], :underscore => true) }
+      context "set to :underscores" do
+        let(:json) { Pump::Json.new('my-person', [{"first-name" => :name}], :json_key_style => :underscores) }
 
         it "returns json string with underscores" do
           json.encode(person).should eql("{\"my_person\":{\"first_name\":\"Benny\"}}")
@@ -209,7 +209,7 @@ describe Pump::Json do
       end
     end
 
-    context "with exclude_root_in_json option" do
+    context "with :exclude_root_in_json option" do
       it "returns json string without root" do
         json.encode(person, :exclude_root_in_json => true).should eql("{\"name\":\"Benny\"}")
       end

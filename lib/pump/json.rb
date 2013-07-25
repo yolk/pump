@@ -90,7 +90,7 @@ module Pump
     end
 
     def format_name(name)
-      return name if encoder_options[:underscore] == false
+      return name.to_s.dasherize if encoder_options[:json_key_style] == :dashes
       name.to_s.underscore
     end
   end
