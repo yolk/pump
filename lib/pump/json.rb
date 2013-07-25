@@ -1,4 +1,5 @@
 require "pump/encoder"
+require 'active_support/json/encoding'
 require "oj"
 
 module Pump

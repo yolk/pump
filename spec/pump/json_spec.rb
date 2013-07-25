@@ -14,6 +14,33 @@ describe Pump::Json do
       json.encode(person).should eql("{\"person\":{\"name\":\"Benny\"}}")
     end
 
+    context "with time object" do
+      let(:person) { Struct.new(:born).new(Time.new(2007,11,1,15,25,0, "+09:00")) }
+      let(:json) { Pump::Json.new('person', [{:born => :born}]) }
+
+      it "formats time as iso string" do
+        json.encode(person).should eql("{\"person\":{\"born\":\"2007-11-01T15:25:00+09:00\"}}")
+      end
+    end
+
+    context "with date object" do
+      let(:person) { Struct.new(:born).new(Date.new(2007,11,1)) }
+      let(:json) { Pump::Json.new('person', [{:born => :born}]) }
+
+      it "formats time as iso string" do
+        json.encode(person).should eql("{\"person\":{\"born\":\"2007-11-01\"}}")
+      end
+    end
+
+    context "with datetime object" do
+      let(:person) { Struct.new(:born).new(DateTime.new(2007,11,1,15,25,0, "+09:00")) }
+      let(:json) { Pump::Json.new('person', [{:born => :born}]) }
+
+      it "formats time as iso string" do
+        json.encode(person).should eql("{\"person\":{\"born\":\"2007-11-01T15:25:00+09:00\"}}")
+      end
+    end
+
     context "with array" do
 
       context "with one entry" do
