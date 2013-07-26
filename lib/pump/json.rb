@@ -1,11 +1,17 @@
 require "pump/encoder"
-require 'active_support/json/encoding'
+
 require "oj"
 
 module Pump
   class Json < Encoder
 
     private
+
+    OJ_OPTIONS = {
+      :mode => :compat, 
+      :time_format => :xmlschema, 
+      :second_precision => 0
+    }
 
     def compile_string
       <<-EOV
@@ -15,7 +21,7 @@ module Pump
           unless options[:exclude_root_in_json]
             json = { :'#{format_name(root_name)}' => json }
           end
-          Oj.dump(json, :mode => :compat)
+          Oj.dump(json, OJ_OPTIONS)
         end
 
         def encode_array(objects, options)
@@ -31,7 +37,7 @@ module Pump
               #{build_string(encoder_config)}
               { :'#{format_name(root_name)}' => json }
             end
-          end, :mode => :compat)
+          end, OJ_OPTIONS)
         end
       EOV
     end
