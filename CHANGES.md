@@ -1,6 +1,13 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.6.1...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.6.2...master)
+
+### 0.6.2 / 2013-07-26
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.6.1...v0.6.2)
+
+* Pump::Encoder now forces loading of ActiveRecord::Relation to detect array
+* Format times correctly with OJ options alone (does not rely on activesupports to_json)
 
 ### 0.6.1 / 2013-07-25
 
