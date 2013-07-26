@@ -52,6 +52,7 @@ module Pump
     #
     # @return [String]
     def encode(object, options={})
+      object = object.to_a if defined?(ActiveRecord::Relation) && object.is_a?(ActiveRecord::Relation)
       object.is_a?(Array) ? encode_array(object, options) : encode_single(object, options)
     end
 
