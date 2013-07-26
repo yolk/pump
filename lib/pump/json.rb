@@ -14,10 +14,10 @@ module Pump
     }
 
     def compile_string
+      main = build_main
       <<-EOV
         def encode_single(object, options)
-          json = {}
-          #{build_string(encoder_config)}
+          #{main}
           unless options[:exclude_root_in_json]
             json = { :'#{format_name(root_name)}' => json }
           end
@@ -27,14 +27,12 @@ module Pump
         def encode_array(objects, options)
           Oj.dump(if options[:exclude_root_in_json]
             objects.map do |object|
-              json = {}
-              #{build_string(encoder_config)}
+              #{main}
               json
             end
           else
             objects.map do |object|
-              json = {}
-              #{build_string(encoder_config)}
+              #{main}
               { :'#{format_name(root_name)}' => json }
             end
           end, OJ_OPTIONS)
@@ -42,7 +40,14 @@ module Pump
       EOV
     end
 
-    def build_string(config, variable='json')
+    def build_main
+      <<-EOV
+        json = {}
+        #{build_part(encoder_config)}
+      EOV
+    end
+
+    def build_part(config, variable='json')
       config.inject("") do |str, config|
         build_key_value_pair(str, config, variable)
         str
@@ -63,7 +68,7 @@ module Pump
     def build_hash(str, name, method_name, config, variable)
       str << "#{build_condition(config)}\n"
       str << "#{variable}[:'#{format_name(name)}'] = {}\n"
-      str << build_string(method_name, "#{variable}[:'#{format_name(name)}']")
+      str << build_part(method_name, "#{variable}[:'#{format_name(name)}']")
       str << "end\n" if build_condition(config)
     end
 
@@ -73,7 +78,7 @@ module Pump
       unless config.has_key?(:static_value)
         str << "object.#{method_name}.each do |object| "
         str << "#{variable}[:'#{format_name(name)}'] << {}\n"
-        str << build_string(config[:array], "#{variable}[:'#{format_name(name)}'][-1]")
+        str << build_part(config[:array], "#{variable}[:'#{format_name(name)}'][-1]")
         str << "end\n"
       end
       str << "end\n" if build_condition(config)
