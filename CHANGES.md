@@ -1,6 +1,10 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.6.2...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.6.3...master)
+
+### 0.6.3 / 2013-07-26
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.6.2...v0.6.3)
 
 * Pump::Xml allow partial output with :fields option
 * Pump::JSON allow partial output with :fields option
