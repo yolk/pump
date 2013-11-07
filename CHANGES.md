@@ -2,6 +2,7 @@
 
 [full changelog](http://github.com/yolk/pump/compare/v0.6.2...master)
 
+* Pump::Xml allow partial output with :fields option
 * Pump::JSON allow partial output with :fields option
 
 ### 0.6.2 / 2013-07-26

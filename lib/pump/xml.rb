@@ -15,25 +15,30 @@ module Pump
         def encode_array(objects, options)
           "#{TagArray.new(root_name, {}, sub_tags, tag_options)}"
         end
+
+        def encode_partial_single(object, options)
+          field_hash = options[:fields]
+          "#{Tag.new(root_name, {}, sub_tags(true), tag_options)}"
+        end
       EOV
     end
 
-    def sub_tags
+    def sub_tags(partial=false)
       encoder_config.map do |config|
-        build_tag(config)
+        build_tag(config, partial)
       end
     end
 
-    def build_tag(config)
+    def build_tag(config, partial, path=[])
       tag_name, method_name = config.keys.first, config.values.first
       attrs = config[:attributes]
-      options = config.merge({:xml_key_style => encoder_options[:xml_key_style]})
+      options = config.merge({:xml_key_style => encoder_options[:xml_key_style], :partial => partial, :path => path})
       if method_name.is_a?(Array)
-        Tag.new(tag_name, attrs, method_name.map{|conf| build_tag(conf) }, options)
+        Tag.new(tag_name, attrs, method_name.map{|conf| build_tag(conf, partial, path.dup << tag_name) }, options)
       elsif config[:array]
         options.merge!(:array_method => method_name, :array_root => tag_name)
         child_root = config[:child_root] || tag_name.to_s.singularize
-        tags = config[:array].map{|conf| build_tag(conf) }
+        tags = config[:array].map{|conf| build_tag(conf, partial, path.dup << tag_name) }
         TagArray.new(child_root, attrs, tags, options)
       else
         Tag.new(tag_name, attrs, Value.new(method_name), options)

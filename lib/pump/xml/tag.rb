@@ -68,15 +68,27 @@ module Pump
       def condition_end
         return unless conditional?
 
-        if options[:if]
-          "\" if object.#{options[:if]} }"
-        elsif options[:unless]
-          "\" unless object.#{options[:unless]} }"
+        conditions = []
+
+        if options[:partial]
+          conditions << if options[:path] && options[:path].any?
+            "field_hash[:'#{options[:path].join('.')}']"
+          else
+            "field_hash[:#{name.to_s.underscore}]"
+          end
         end
+
+        if options[:if]
+          conditions << "object.#{options[:if]}"
+        elsif options[:unless]
+          conditions << "!object.#{options[:unless]}"
+        end
+
+        "\" if #{conditions.join(" && ")} }" if conditions.any?
       end
 
       def conditional?
-        !!(options[:if] || options[:unless])
+        !!(options[:if] || options[:unless] || options[:partial])
       end
     end
   end

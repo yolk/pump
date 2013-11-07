@@ -332,5 +332,52 @@ describe Pump::Xml do
         end
       end
     end
+
+    context "with :fields option" do
+      let(:xml) { Pump::Xml.new('person', [
+        {:name => :name}, {:age => :age}, {:last_name => :last_name},
+        {:parent => [{:name => :name}, {:age => :age}]}
+      ])}
+
+      it "returns only specified fields" do
+        xml.encode(person, :fields => ['name']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Benny</name>\n</person>\n")
+        xml.encode(person, :fields => ['age']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <age>9</age>\n</person>\n")
+      end
+
+      it "ignores unknown fields" do
+        xml.encode(person, :fields => ['name', 'unknown']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Benny</name>\n</person>\n")
+        xml.encode(person, :fields => ['unknown']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n</person>\n")
+      end
+
+      it "accepts dasherized and underscored field names" do
+        xml.encode(person, :fields => ['name', 'last-name']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Benny</name>\n  <last-name>Hellman</last-name>\n</person>\n")
+        xml.encode(person, :fields => ['name', 'last_name']).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Benny</name>\n  <last-name>Hellman</last-name>\n</person>\n")
+      end
+
+      context "deep hash-like nesting" do
+        it "adds all keys if fields contains parent" do
+          xml.encode(person, :fields => ['name', 'parent']).should eql(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Benny</name>\n  <parent>\n    <name>Benny</name>\n    <age>9</age>\n  </parent>\n</person>\n"
+          )
+        end
+      end
+
+      context "deep array-like nesting" do
+        let(:person) {
+          Struct.new(:name, :age, :children).new('Gustav', 1, [
+            Struct.new(:name, :age).new('Lilly', 2),
+            Struct.new(:name, :age).new('Lena', 3)
+        ]) }
+
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age}, {:children => :children,
+                                              :array => [{:name => :name}, {:age => :age}]}]) }
+
+        it "adds all keys if fields contains children" do
+          xml.encode(person, :fields => ['name', 'children']).should eql(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>Gustav</name>\n  <children type=\"array\">\n    <child>\n      <name>Lilly</name>\n      <age>2</age>\n    </child>\n    <child>\n      <name>Lena</name>\n      <age>3</age>\n    </child>\n  </children>\n</person>\n"
+          )
+        end
+      end
+    end
   end
 end
