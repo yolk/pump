@@ -47,6 +47,20 @@ module Pump
             end
           end, OJ_OPTIONS)
         end
+
+        def encode_partial_array(objects, options)
+          Oj.dump(if options[:exclude_root_in_json]
+            objects.map do |object|
+              #{partial_main}
+              json
+            end
+          else
+            objects.map do |object|
+              #{partial_main}
+              { :'#{format_name(root_name)}' => json }
+            end
+          end, OJ_OPTIONS)
+        end
       EOV
     end
 

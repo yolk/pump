@@ -56,7 +56,11 @@ module Pump
       object = object.to_a if defined?(ActiveRecord::Relation) && object.is_a?(ActiveRecord::Relation)
       fields_to_hash(options)
       if object.is_a?(Array)
-        encode_array(object, options)
+        if options[:fields]
+          encode_partial_array(object, options)
+        else
+          encode_array(object, options)
+        end
       elsif options[:fields]
         encode_partial_single(object, options)
       else

@@ -291,6 +291,21 @@ describe Pump::Json do
           )
         end
       end
+
+      context "with array of objects" do
+        let(:people) {
+          [
+            Struct.new(:name, :age, :children).new('Gustav', 2),
+            Struct.new(:name, :age, :children).new('Mary', 1)
+          ]
+        }
+
+        let(:json) { Pump::Json.new('person', [{:name => :name}, {:age => :age}]) }
+
+        it "returns only specified fields" do
+          json.encode(people, :fields => ['name']).should eql("[{\"person\":{\"name\":\"Gustav\"}},{\"person\":{\"name\":\"Mary\"}}]")
+        end
+      end
     end
   end
 end

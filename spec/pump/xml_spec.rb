@@ -378,6 +378,21 @@ describe Pump::Xml do
           )
         end
       end
+
+      context "with array of objects" do
+        let(:people) {
+          [
+            Struct.new(:name, :age, :children).new('Gustav', 2),
+            Struct.new(:name, :age, :children).new('Mary', 1)
+          ]
+        }
+
+        let(:xml) { Pump::Xml.new('person', [{:name => :name}, {:age => :age}]) }
+
+        it "returns only specified fields" do
+          xml.encode(people, :fields => ['name']).should eql("#{XML_INSTRUCT}<people type=\"array\">\n  <person>\n    <name>Gustav</name>\n  </person>\n  <person>\n    <name>Mary</name>\n  </person>\n</people>\n")
+        end
+      end
     end
   end
 end

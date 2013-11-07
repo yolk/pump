@@ -20,6 +20,11 @@ module Pump
           field_hash = options[:fields]
           "#{Tag.new(root_name, {}, sub_tags(true), tag_options)}"
         end
+
+        def encode_partial_array(objects, options)
+          field_hash = options[:fields]
+          "#{TagArray.new(root_name, {}, sub_tags(true), tag_options)}"
+        end
       EOV
     end
 
