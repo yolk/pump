@@ -1,10 +1,14 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.6.3...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.6.4...master)
+
+### 0.6.4 / 2013-11-08
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.6.3...v0.6.4)
 
 * :fields option is now supported on array in JSON and XML
 
-### 0.6.3 / 2013-07-26
+### 0.6.3 / 2013-11-08
 
 [full changelog](http://github.com/yolk/valvat/compare/v0.6.2...v0.6.3)
 
