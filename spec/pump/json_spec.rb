@@ -156,14 +156,14 @@ describe Pump::Json do
     end
 
     context "deep hash-like nesting" do
-      let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}]}], :instruct => false) }
+      let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}]}]) }
 
       it "returns static string" do
         json.encode(person).should eql("{\"person\":{\"name\":\"Benny\",\"parent\":{\"name\":\"Benny\",\"age\":9}}}")
       end
 
       context "with static_value = nil" do
-        let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => nil}], :instruct => false) }
+        let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => nil}]) }
 
         it "uses static value" do
           json.encode(person).should eql("{\"person\":{\"name\":\"Benny\",\"parent\":null}}")
@@ -171,7 +171,7 @@ describe Pump::Json do
       end
 
       context "with static_value = {}" do
-        let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => {}}], :instruct => false) }
+        let(:json) { Pump::Json.new('person', [{:name => :name}, {:parent => [{:name => :name}, {:age => :age}], :static_value => {}}]) }
 
         it "uses static value" do
           json.encode(person).should eql("{\"person\":{\"name\":\"Benny\",\"parent\":{}}}")
@@ -187,7 +187,7 @@ describe Pump::Json do
       ]) }
 
       let(:json) { Pump::Json.new('person', [{:name => :name}, {:children => :children,
-                                            :array => [{:name => :name}]}], :instruct => false) }
+                                            :array => [{:name => :name}]}]) }
 
       it "returns json string" do
         json.encode(person).should eql("{\"person\":{\"name\":\"Gustav\",\"children\":[{\"name\":\"Lilly\"},{\"name\":\"Lena\"}]}}")
@@ -195,7 +195,7 @@ describe Pump::Json do
 
       context "with static_value = nil" do
         let(:json) { Pump::Json.new('person', [{:name => :name}, {:children => :children,
-                                            :array => [{:name => :name}], :static_value => nil}], :instruct => false) }
+                                            :array => [{:name => :name}], :static_value => nil}]) }
         it "uses static value" do
           json.encode(person).should eql("{\"person\":{\"name\":\"Gustav\",\"children\":[]}}")
         end
@@ -203,7 +203,7 @@ describe Pump::Json do
 
       context "with static_value = []" do
         let(:json) { Pump::Json.new('person', [{:name => :name}, {:children => :children,
-                                            :array => [{:name => :name}], :static_value => []}], :instruct => false) }
+                                            :array => [{:name => :name}], :static_value => []}]) }
         it "uses static value" do
           json.encode(person).should eql("{\"person\":{\"name\":\"Gustav\",\"children\":[]}}")
         end
@@ -239,6 +239,57 @@ describe Pump::Json do
     context "with :exclude_root_in_json option" do
       it "returns json string without root" do
         json.encode(person, :exclude_root_in_json => true).should eql("{\"name\":\"Benny\"}")
+      end
+
+      it "returns json string without root on array" do
+        json.encode([person], :exclude_root_in_json => true).should eql("[{\"name\":\"Benny\"}]")
+      end
+    end
+
+    context "with :fields option" do
+      let(:json) { Pump::Json.new('person', [
+        {:name => :name}, {:age => :age}, {:last_name => :last_name},
+        {:parent => [{:name => :name}, {:age => :age}]}
+      ])}
+
+      it "returns only specified fields" do
+        json.encode(person, :fields => ['name']).should eql("{\"person\":{\"name\":\"Benny\"}}")
+        json.encode(person, :fields => ['age']).should eql("{\"person\":{\"age\":9}}")
+      end
+
+      it "ignores unknown fields" do
+        json.encode(person, :fields => ['name', 'unknown']).should eql("{\"person\":{\"name\":\"Benny\"}}")
+        json.encode(person, :fields => ['unknown']).should eql("{\"person\":{}}")
+      end
+
+      it "accepts dasherized and underscored field names" do
+        json.encode(person, :fields => ['name', 'last-name']).should eql("{\"person\":{\"name\":\"Benny\",\"last_name\":\"Hellman\"}}")
+        json.encode(person, :fields => ['name', 'last_name']).should eql("{\"person\":{\"name\":\"Benny\",\"last_name\":\"Hellman\"}}")
+      end
+
+      context "deep hash-like nesting" do
+        it "adds all keys if fields contains parent" do
+          json.encode(person, :fields => ['name', 'parent']).should eql(
+            "{\"person\":{\"name\":\"Benny\",\"parent\":{\"name\":\"Benny\",\"age\":9}}}"
+          )
+        end
+      end
+
+      context "deep array-like nesting" do
+        let(:person) {
+          Struct.new(:name, :age, :children).new('Gustav', 1, [
+            Struct.new(:name, :age).new('Lilly', 2),
+            Struct.new(:name, :age).new('Lena', 3)
+        ]) }
+
+        let(:json) { Pump::Json.new('person', [{:name => :name}, {:age => :age}, {:children => :children,
+                                              :array => [{:name => :name}, {:age => :age}]}]) }
+
+        it "adds all keys if fields contains children" do
+          json.encode(person, :fields => ['name', 'children']).should eql(
+            "{\"person\":{\"name\":\"Gustav\",\"children\":[{\"name\":\"Lilly\",\"age\":2},{\"name\":\"Lena\",\"age\":3}]}}"
+          )
+        end
       end
     end
   end

@@ -41,6 +41,7 @@ module Pump
       @root_name = root_name
       merge_base
 
+      compile_field_map
       compile
     end
 
@@ -53,7 +54,14 @@ module Pump
     # @return [String]
     def encode(object, options={})
       object = object.to_a if defined?(ActiveRecord::Relation) && object.is_a?(ActiveRecord::Relation)
-      object.is_a?(Array) ? encode_array(object, options) : encode_single(object, options)
+      fields_to_hash(options)
+      if object.is_a?(Array)
+        encode_array(object, options)
+      elsif options[:fields]
+        encode_partial_single(object, options)
+      else
+        encode_single(object, options)
+      end
     end
 
     private
@@ -63,6 +71,21 @@ module Pump
     end
 
     def compile_string;end
+
+    def compile_field_map
+      instance_eval("@fields_map = { #{compile_string_fields_map} }")
+    end
+
+    def compile_string_fields_map
+      encoder_config.map do |config|
+        config.keys.first
+      end.inject([]) do |array, name|
+        underscores = name.to_s.underscore
+        dashes = name.to_s.dasherize
+        array << "'#{dashes}' => true" if dashes != underscores
+        array << "'#{underscores}' => true"
+      end.join(',')
+    end
 
     def merge_base
       return unless @encoder_options[:base]
@@ -88,6 +111,14 @@ module Pump
 
     def merge_base_options
       encoder_options.merge!(base.encoder_options) { |key, v1, v2| v1 }
+    end
+
+    def fields_to_hash(options)
+      return unless options[:fields]
+      options[:fields] = options[:fields].inject({}) do |hash, name|
+        hash[name.to_s.underscore.to_sym] = true if @fields_map[name.to_s]
+        hash
+      end
     end
   end
 end
