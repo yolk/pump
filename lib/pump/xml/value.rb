@@ -10,7 +10,7 @@ module Pump
       end
 
       def to_s(plain_path=nil)
-        "\#{#{plain_path || plain}#{cast}}"
+        "\#{#{remove_ilegal_chars}#{plain_path || plain}#{cast}}"
       end
 
       private
@@ -21,6 +21,10 @@ module Pump
         elsif !options[:xmlsafe]
           '.to_s.encode(:xml => :text)'
         end
+      end
+
+      def remove_ilegal_chars
+        "remove_ilegal_chars " if !options[:typecast] && !options[:xmlsafe]
       end
     end
   end

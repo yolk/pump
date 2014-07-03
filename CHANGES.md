@@ -2,6 +2,8 @@
 
 [full changelog](http://github.com/yolk/pump/compare/v0.6.4...master)
 
+* XML: Remove ilegal chars from string values
+
 ### 0.6.4 / 2013-11-08
 
 [full changelog](http://github.com/yolk/valvat/compare/v0.6.3...v0.6.4)

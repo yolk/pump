@@ -14,6 +14,14 @@ describe Pump::Xml do
       xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny</name>\n</person>\n")
     end
 
+    context "with ilegal chars" do
+      let(:person) { Struct.new(:name, :age, :last_name).new("Benny \u001APenny", 9, "Hellman") }
+
+      it "returns xml string" do
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny Penny</name>\n</person>\n")
+      end
+    end
+
     context "with array" do
 
       context "with one entry" do
