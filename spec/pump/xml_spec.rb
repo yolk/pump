@@ -15,10 +15,10 @@ describe Pump::Xml do
     end
 
     context "with ilegal chars" do
-      let(:person) { Struct.new(:name, :age, :last_name).new("Benny \u001APenny", 9, "Hellman") }
+      let(:person) { Struct.new(:name, :age, :last_name).new("Benny\n\u001APenny", 9, "Hellman") }
 
       it "returns xml string" do
-        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny Penny</name>\n</person>\n")
+        xml.encode(person).should eql("#{XML_INSTRUCT}<person>\n  <name>Benny\nPenny</name>\n</person>\n")
       end
     end
 

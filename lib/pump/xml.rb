@@ -69,7 +69,7 @@ module Pump
       (0x10000..0x10FFFF)
     ]
 
-    VALID_XML_CHARS = Regexp.new('^['+
+    VALID_XML_CHARS = Regexp.new('\A['+
       VALID_CHAR.map { |item|
         case item
         when Fixnum
@@ -78,7 +78,7 @@ module Pump
           [item.first, '-'.ord, item.last].pack('UUU').force_encoding('utf-8')
         end
       }.join +
-    ']*$')
+    ']*\Z')
 
     def remove_ilegal_chars(string)
       return string if !string.is_a?(String) || string =~ VALID_XML_CHARS
