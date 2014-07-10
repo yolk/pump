@@ -75,31 +75,31 @@ end
 
 describe Pump::Object do
   it "should not extend all objects by default" do
-    ObjectWithoutInclude.respond_to?(:pumps).should eql(false)
+    expect(ObjectWithoutInclude.respond_to?(:pumps)).to eql(false)
   end
 
   context "when included" do
     subject { ObjectWithInclude }
 
     it "should add pumps class method" do
-      subject.respond_to?(:pumps).should eql(true)
-      subject.pumps.size.should eql(0)
+      expect(subject.respond_to?(:pumps)).to eql(true)
+      expect(subject.pumps.size).to eql(0)
     end
 
     it "should add pump_to_xml instance method" do
-      subject.new.respond_to?(:pump_to_xml).should eql(true)
+      expect(subject.new.respond_to?(:pump_to_xml)).to eql(true)
     end
 
     it "should add pump_to_json instance method" do
-      subject.new.respond_to?(:pump_to_json).should eql(true)
+      expect(subject.new.respond_to?(:pump_to_json)).to eql(true)
     end
 
     it "should fall back to original to_xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<to_xml />")
+      expect(subject.new.pump_to_xml).to eql("<to_xml />")
     end
 
     it "should fall back to original to_json on pump_to_xml" do
-      subject.new.pump_to_json.should eql("{to_json}")
+      expect(subject.new.pump_to_json).to eql("{to_json}")
     end
   end
 
@@ -107,19 +107,19 @@ describe Pump::Object do
     subject { ObjectWithIncludeAndPumps }
 
     it "should add pump" do
-      subject.pumps.size.should eql(1)
+      expect(subject.pumps.size).to eql(1)
     end
 
     it "should return xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
+      expect(subject.new.pump_to_xml).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return json on pump_to_json" do
-      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\"}}")
+      expect(subject.new.pump_to_json).to eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
 
     it "should pass down options to encoder" do
-      subject.new.pump_to_json(:exclude_root_in_json => true).should eql("{\"name\":\"MyName\"}")
+      expect(subject.new.pump_to_json(:exclude_root_in_json => true)).to eql("{\"name\":\"MyName\"}")
     end
   end
 
@@ -127,31 +127,31 @@ describe Pump::Object do
     subject { ObjectWithIncludeAndMultiplePumps }
 
     it "should add pumps" do
-      subject.pumps.size.should eql(2)
+      expect(subject.pumps.size).to eql(2)
     end
 
     it "should return default xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
+      expect(subject.new.pump_to_xml).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return special xml on set option" do
-      subject.new.pump_to_xml(:set => :sometimes).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <age type=\"integer\">72</age>\n</my-object>\n")
+      expect(subject.new.pump_to_xml(:set => :sometimes)).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <age type=\"integer\">72</age>\n</my-object>\n")
     end
 
     it "should return default xml on pump_to_xml with unknown set option" do
-      subject.new.pump_to_xml(:set => :unknown).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
+      expect(subject.new.pump_to_xml(:set => :unknown)).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n</my-object>\n")
     end
 
     it "should return default json on pump_to_json" do
-      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\"}}")
+      expect(subject.new.pump_to_json).to eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
 
     it "should return special json on set option" do
-      subject.new.pump_to_json(:set => :sometimes).should eql("{\"my_object\":{\"name\":\"MyName\",\"age\":72}}")
+      expect(subject.new.pump_to_json(:set => :sometimes)).to eql("{\"my_object\":{\"name\":\"MyName\",\"age\":72}}")
     end
 
     it "should return default json on pump_to_json with unknown set option" do
-      subject.new.pump_to_json(:set => :unknown).should eql("{\"my_object\":{\"name\":\"MyName\"}}")
+      expect(subject.new.pump_to_json(:set => :unknown)).to eql("{\"my_object\":{\"name\":\"MyName\"}}")
     end
   end
 
@@ -159,23 +159,23 @@ describe Pump::Object do
     subject { ObjectWithIncludeAndMultiplePumpsWithInheritance }
 
     it "should add pumps" do
-      subject.pumps.size.should eql(2)
+      expect(subject.pumps.size).to eql(2)
     end
 
     it "should return default xml on pump_to_xml" do
-      subject.new.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>my_role</role>\n</my-object>\n")
+      expect(subject.new.pump_to_xml).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>my_role</role>\n</my-object>\n")
     end
 
     it "should return default json on pump_to_json" do
-      subject.new.pump_to_json.should eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"my_role\"}}")
+      expect(subject.new.pump_to_json).to eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"my_role\"}}")
     end
 
     it "should return special inherited xml on pump_to_xml(:set => :restricted)" do
-      subject.new.pump_to_xml(:set => :restricted).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>basic_role</role>\n  <age type=\"integer\">72</age>\n</my-object>\n")
+      expect(subject.new.pump_to_xml(:set => :restricted)).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<my-object>\n  <name>MyName</name>\n  <role>basic_role</role>\n  <age type=\"integer\">72</age>\n</my-object>\n")
     end
 
     it "should return special inherited json on pump_to_json(:set => :restricted)" do
-      subject.new.pump_to_json(:set => :restricted).should eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"basic_role\",\"age\":72}}")
+      expect(subject.new.pump_to_json(:set => :restricted)).to eql("{\"my_object\":{\"name\":\"MyName\",\"role\":\"basic_role\",\"age\":72}}")
     end
   end
 end

@@ -3,10 +3,10 @@ require 'spec_helper'
 describe Pump::Encoder do
   describe ".new" do
     it "requires two parameters or one and a block" do
-      lambda{ Pump::Encoder.new }.should raise_error(ArgumentError)
-      lambda{ Pump::Encoder.new('record') }.should raise_error(ArgumentError)
-      lambda{ Pump::Encoder.new('record', []) }.should_not raise_error
-      lambda{ Pump::Encoder.new('record') {} }.should_not raise_error
+      expect{ Pump::Encoder.new }.to raise_error(ArgumentError)
+      expect{ Pump::Encoder.new('record') }.to raise_error(ArgumentError)
+      expect{ Pump::Encoder.new('record', []) }.not_to raise_error
+      expect{ Pump::Encoder.new('record') {} }.not_to raise_error
     end
 
     describe "with block given" do
@@ -30,7 +30,7 @@ describe Pump::Encoder do
 
         it "leaves base config untouched" do
           subject
-          base.encoder_config.should eql([{:name => :name}, {:role => :role}])
+          expect(base.encoder_config).to eql([{:name => :name}, {:role => :role}])
         end
       end
 
@@ -40,7 +40,7 @@ describe Pump::Encoder do
 
         it "leaves base config untouched" do
           subject
-          base.encoder_config.should eql([{:name => :name}, {:role => :role}])
+          expect(base.encoder_config).to eql([{:name => :name}, {:role => :role}])
         end
       end
 
@@ -50,7 +50,7 @@ describe Pump::Encoder do
 
         it "leaves base config untouched" do
           subject
-          base.encoder_config.should eql([{:name => :name}, {:role => :role}])
+          expect(base.encoder_config).to eql([{:name => :name}, {:role => :role}])
         end
       end
 
@@ -65,7 +65,7 @@ describe Pump::Encoder do
 
         it "leaves base config untouched" do
           subject
-          base.encoder_config.should eql([{:name => :name}, {:role => :role}])
+          expect(base.encoder_config).to eql([{:name => :name}, {:role => :role}])
         end
       end
 
@@ -76,7 +76,7 @@ describe Pump::Encoder do
 
           it "leaves base options untouched" do
             subject
-            base.encoder_options.should eql({:option => true})
+            expect(base.encoder_options).to eql({:option => true})
           end
         end
       end
@@ -88,7 +88,7 @@ describe Pump::Encoder do
 
           it "leaves base options untouched" do
             subject
-            base.encoder_options.should eql({:option => true})
+            expect(base.encoder_options).to eql({:option => true})
           end
         end
       end

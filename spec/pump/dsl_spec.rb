@@ -5,8 +5,8 @@ describe Pump::Dsl do
 
   describe ".new" do
     it "requires one block" do
-      lambda{ Pump::Dsl.new }.should raise_error(ArgumentError)
-      lambda{ subject }.should_not raise_error
+      expect{ Pump::Dsl.new }.to raise_error(ArgumentError)
+      expect{ subject }.not_to raise_error
     end
   end
 

@@ -5,8 +5,8 @@ describe Pump::Xml::Value do
 
   describe ".new" do
     it "requires one parameter" do
-      lambda{ Pump::Xml::Value.new }.should raise_error(ArgumentError)
-      lambda{ subject }.should_not raise_error
+      expect{ Pump::Xml::Value.new }.to raise_error(ArgumentError)
+      expect{ subject }.not_to raise_error
     end
   end
 
@@ -31,7 +31,7 @@ describe Pump::Xml::Value do
 
     context "with path name" do
       it do
-        subject.to_s('custom_path').should eql("\#{remove_ilegal_chars custom_path.to_s.encode(:xml => :text)}")
+        expect(subject.to_s('custom_path')).to eql("\#{remove_ilegal_chars custom_path.to_s.encode(:xml => :text)}")
       end
     end
   end

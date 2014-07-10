@@ -40,22 +40,22 @@ end
 
 describe Pump::Array do
   it "should extend ::Array by default with pump_to_xml" do
-    [].respond_to?(:pump_to_xml).should eql(true)
+    expect([].respond_to?(:pump_to_xml)).to eql(true)
   end
 
   it "should extend ::Array by default with pump_to_json" do
-    [].respond_to?(:pump_to_json).should eql(true)
+    expect([].respond_to?(:pump_to_json)).to eql(true)
   end
 
   context "with objects without include" do
     subject{ [ArrayObjectWithoutInclude.new] }
 
     it "should return default to_xml" do
-      subject.pump_to_xml.should eql(subject.to_xml)
+      expect(subject.pump_to_xml).to eql(subject.to_xml)
     end
 
     it "should return default to_json" do
-      subject.pump_to_json.should eql(subject.to_json)
+      expect(subject.pump_to_json).to eql(subject.to_json)
     end
   end
 
@@ -63,11 +63,11 @@ describe Pump::Array do
     subject{ [ArrayObjectWithInclude.new] }
 
     it "should return default to_xml" do
-      subject.pump_to_xml.should eql(subject.to_xml)
+      expect(subject.pump_to_xml).to eql(subject.to_xml)
     end
 
     it "should return default to_json" do
-      subject.pump_to_json.should eql(subject.to_json)
+      expect(subject.pump_to_json).to eql(subject.to_json)
     end
   end
 
@@ -75,31 +75,31 @@ describe Pump::Array do
     subject{ [ArrayObject.new] }
 
     it "should encode with default encoder" do
-      subject.pump_to_xml.should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n  </array-object>\n</array-objects>\n")
+      expect(subject.pump_to_xml).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n  </array-object>\n</array-objects>\n")
     end
 
     it "should encode with specified encoder" do
-      subject.pump_to_xml(:set => :with_age).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n    <age type=\"integer\">27</age>\n  </array-object>\n</array-objects>\n")
+      expect(subject.pump_to_xml(:set => :with_age)).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n    <age type=\"integer\">27</age>\n  </array-object>\n</array-objects>\n")
     end
 
     it "should encode with default encoder on unknown set" do
-      subject.pump_to_xml(:set => :bla).should eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n  </array-object>\n</array-objects>\n")
+      expect(subject.pump_to_xml(:set => :bla)).to eql("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<array-objects type=\"array\">\n  <array-object>\n    <name>Tintin</name>\n  </array-object>\n</array-objects>\n")
     end
 
     it "should encode json with default encoder" do
-      subject.pump_to_json.should eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
+      expect(subject.pump_to_json).to eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
     end
 
     it "should encode json with specified encoder" do
-      subject.pump_to_json(:set => :with_age).should eql("[{\"array_object\":{\"name\":\"Tintin\",\"age\":27}}]")
+      expect(subject.pump_to_json(:set => :with_age)).to eql("[{\"array_object\":{\"name\":\"Tintin\",\"age\":27}}]")
     end
 
     it "should encode json with default encoder on unknown set" do
-      subject.pump_to_json(:set => :bla).should eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
+      expect(subject.pump_to_json(:set => :bla)).to eql("[{\"array_object\":{\"name\":\"Tintin\"}}]")
     end
 
     it "should pass down options to encoder" do
-      subject.pump_to_json(:exclude_root_in_json => true).should eql("[{\"name\":\"Tintin\"}]")
+      expect(subject.pump_to_json(:exclude_root_in_json => true)).to eql("[{\"name\":\"Tintin\"}]")
     end
   end
 end
