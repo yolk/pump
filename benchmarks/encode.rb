@@ -1,8 +1,9 @@
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
-
+#!/usr/bin/env ruby
 require 'rubygems'
-require 'benchmark'
+require 'bundler/setup'
 
+require 'benchmark'
+require 'to_json'
 require 'pump'
 require 'ox'
 require 'oj'
@@ -23,6 +24,29 @@ pump_json = Pump::Json.new('person', [
   {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true},
   {:name => :name}
 ])
+
+module ToJsonBench
+
+  class PeopleSerializer
+    include  ::ToJson::Serialize
+
+    def put_person(person)
+      put :name, person.name
+      put :age, person.age
+      put :"created-at", person.created_at.xmlschema
+    end
+
+    def put_people(people)
+      array people do |person|
+        put_person person
+      end
+    end
+
+    def serialize(collection)
+      put_people collection
+    end
+  end
+end
 
 # Not optimized pump
 pump = Pump::Xml.new('person', [
@@ -89,6 +113,12 @@ Benchmark.bmbm { |x|
   x.report("Pump::Json#encode") {
     times.times {
       pump_json.encode(array)
+    }
+  }
+
+  x.report("ToJson") {
+    times.times {
+      ToJsonBench::PeopleSerializer.json!(array)
     }
   }
 
