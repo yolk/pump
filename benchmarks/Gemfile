@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'pump', path: '..'
+gem 'ox'
+gem 'oj'
+gem 'yajl-ruby'
+gem 'activemodel'
+gem 'to_json', github: 'ahacking/to_json'

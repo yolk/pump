@@ -1,0 +1,47 @@
+GIT
+  remote: git://github.com/ahacking/to_json.git
+  revision: 7c1935704af204302de0bc9f6ca4dec62813ec94
+  specs:
+    to_json (0.0.4)
+      oj (>= 2.9.4)
+
+PATH
+  remote: ..
+  specs:
+    pump (0.6.6)
+      activesupport (>= 3.2)
+      oj (>= 2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (4.1.7)
+      activesupport (= 4.1.7)
+      builder (~> 3.1)
+    activesupport (4.1.7)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    builder (3.2.2)
+    i18n (0.6.11)
+    json (1.8.1)
+    minitest (5.4.3)
+    oj (2.11.1)
+    ox (2.1.3)
+    thread_safe (0.3.4)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    yajl-ruby (1.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activemodel
+  oj
+  ox
+  pump!
+  to_json!
+  yajl-ruby
