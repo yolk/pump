@@ -1,6 +1,14 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.6.6...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.7.0...master)
+
+### 0.7.0 / 2017-06-26
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.6.6...v0.7.0)
+
+* Fixed Fixnum warning in Ruby 2.4.1
+* Test against ruby 2.3 and 2.4
+* Updated to OJ 3.2
 
 ### 0.6.6 / 2014-07-03
 
