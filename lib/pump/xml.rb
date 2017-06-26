@@ -72,7 +72,7 @@ module Pump
     VALID_XML_CHARS = Regexp.new('\A['+
       VALID_CHAR.map { |item|
         case item
-        when Fixnum
+        when 0.class
           [item].pack('U').force_encoding('utf-8')
         when Range
           [item.first, '-'.ord, item.last].pack('UUU').force_encoding('utf-8')
