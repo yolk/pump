@@ -8,9 +8,11 @@ module Pump
     private
 
     OJ_OPTIONS = {
-      :mode => :compat,
+      :mode => :custom,
+      :second_precision => 0,
       :time_format => :xmlschema,
-      :second_precision => 0
+      :create_additions => false,
+      :use_as_json => true
     }
 
     def compile_string
