@@ -9,6 +9,7 @@ require 'ox'
 require 'oj'
 require 'yajl'
 require 'active_model'
+require 'activemodel-serializers-xml'
 
 class Person < Struct.new(:name, :age, :created_at)
   include ActiveModel::Serializers::Xml if defined?(ActiveModel)
