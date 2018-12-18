@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.7.0...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.8.0...master)
+
+### 0.8.0 / 2012-12-18
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.7.0...v0.8.0)
+
+* Added Pump::JSON#to_structs
 
 ### 0.7.0 / 2017-06-26
 
