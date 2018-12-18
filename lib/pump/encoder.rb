@@ -45,11 +45,11 @@ module Pump
       compile
     end
 
-    # Encode a object or an array of objects to an XML-string.
+    # Encode a object or an array of objects to an formatted string.
     #
     # @param [Object, Array<Object>] object object or an array of objects to
-    #    encode to XML. The only requirement: The given objects must respond
-    #    to all methods configured during initalization of the Pump::Xml instance.
+    #    encode to XML or JSON. The only requirement: The given objects must respond
+    #    to all methods configured during initalization of the Pump::Xml or Pump::JSON instance.
     #
     # @return [String]
     def encode(object, options={})
