@@ -1,6 +1,16 @@
 require 'spec_helper'
 
 describe Pump::Json do
+  describe "#to_structs" do
+    let(:person) { Struct.new(:name, :age, :last_name).new('Benny', 9, 'Hellman') }
+    let(:json) { Pump::Json.new('person', [{:name => :name}]) }
+
+    it "returns json as structure" do
+      expect(json.to_structs(person)).to eql({:person=>{:name=>"Benny"}})
+      expect(json.to_structs(person, exclude_root_in_json: true)).to eql({:name=>"Benny"})
+    end
+  end
+
   describe "#encode" do
     let(:person) { Struct.new(:name, :age, :last_name).new('Benny', 9, 'Hellman') }
     let(:json) { Pump::Json.new('person', [{:name => :name}]) }

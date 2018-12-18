@@ -20,6 +20,14 @@ module Pump
       partial_main = build_main(:partial => true)
 
       <<-EOV
+        def to_structs(object, options={})
+          #{main}
+          unless options[:exclude_root_in_json]
+            json = { :'#{format_name(root_name)}' => json }
+          end
+          json
+        end
+
         def encode_single(object, options)
           #{main}
           unless options[:exclude_root_in_json]
