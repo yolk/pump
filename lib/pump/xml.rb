@@ -9,7 +9,7 @@ module Pump
     def compile_string
       <<-EOV
         def to_structs(object, options)
-          "#{Tag.new(options[:root_name] || root_name, {}, sub_tags, tag_options)}"
+          "#{sub_tags}"
         end
 
         def encode_single(object, options)
