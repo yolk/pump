@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](http://github.com/yolk/pump/compare/v0.8.0...master)
+[full changelog](http://github.com/yolk/pump/compare/v0.9.0...master)
+
+### 0.9.0 / 2012-12-22
+
+[full changelog](http://github.com/yolk/valvat/compare/v0.8.0...v0.9.0)
+
+* Added Pump::XML#to_structs
 
 ### 0.8.0 / 2012-12-18
 
