@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'pump', path: '..'
-gem 'ox'
+gem 'ox', '~> 2.8.1'
 gem 'oj'
-gem 'yajl-ruby'
-gem 'activemodel'
+gem 'yajl-ruby', '~> 1.3.1'
+gem 'activemodel', '~> 5.2.4.3'
 gem 'activemodel-serializers-xml'
 gem 'to_json', github: 'ahacking/to_json'
