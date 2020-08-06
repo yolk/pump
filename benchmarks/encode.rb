@@ -10,6 +10,7 @@ require 'oj'
 require 'yajl'
 require 'active_model'
 require 'activemodel-serializers-xml'
+require 'fast_jsonapi'
 
 class Person < Struct.new(:name, :age, :created_at)
   include ActiveModel::Serializers::Xml if defined?(ActiveModel)
@@ -47,6 +48,13 @@ module ToJsonBench
       put_people collection
     end
   end
+end
+
+class FastJsonapiSerializer
+  include FastJsonapi::ObjectSerializer
+  set_type :person  # optional
+  set_id :name # optional
+  attributes :age, :created_at
 end
 
 # Not optimized pump
@@ -106,10 +114,12 @@ array = []
   array << Person.new((0...(rand(15)+5)).map{ ('a'..'z').to_a[rand(26)] }.join, rand(100), Time.now + rand(1000000))
 end
 
-times = ARGV[1] ? ARGV[1].to_i : 1000
+times = ARGV[1] ? ARGV[1].to_i : 100
 puts "Starting benchmark serializing array with #{array.size} entries #{times} times\n\n"
 
 Benchmark.bmbm { |x|
+
+  data = array.map(&:attributes)
 
   x.report("Pump::Json#encode") {
     times.times {
@@ -120,6 +130,12 @@ Benchmark.bmbm { |x|
   x.report("ToJson") {
     times.times {
       ToJsonBench::PeopleSerializer.json!(array)
+    }
+  }
+
+  x.report("fast_jsonapi") {
+    times.times {
+      FastJsonapiSerializer.new(array).serialized_json
     }
   }
 
@@ -135,7 +151,7 @@ Benchmark.bmbm { |x|
     }
   }
 
-  if defined?(Ox)
+  if defined?(Ox) && false
     x.report("Ox") {
       times.times {
         serialize_with_ox(array)
@@ -146,7 +162,7 @@ Benchmark.bmbm { |x|
   if defined?(Oj)
     x.report("Oj") {
       times.times {
-        Oj.dump(array.map(&:attributes), :mode => :compat)
+        Oj.dump(data, :mode => :compat)
       }
     }
   end
@@ -154,7 +170,7 @@ Benchmark.bmbm { |x|
   if defined?(Yajl)
     x.report("Yajl") {
       times.times {
-        Yajl::Encoder.encode(array.map(&:attributes))
+        Yajl::Encoder.encode(data)
       }
     }
   end
@@ -164,7 +180,7 @@ Benchmark.bmbm { |x|
       times.times {
         array.to_xml
       }
-    }
+    } if false
 
     x.report("ActiveModel#to_json") {
       times.times {
