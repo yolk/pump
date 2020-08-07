@@ -19,6 +19,10 @@ class Person < Struct.new(:name, :age, :created_at)
   def attributes
     {'name' => name, 'age' => age, 'created_at' => created_at}
   end
+
+  def attributes_symbols
+    {:name => name, :age => age, :created_at => created_at}
+  end
 end
 
 pump_json = Pump::Json.new('person', [
@@ -114,12 +118,10 @@ array = []
   array << Person.new((0...(rand(15)+5)).map{ ('a'..'z').to_a[rand(26)] }.join, rand(100), Time.now + rand(1000000))
 end
 
-times = ARGV[1] ? ARGV[1].to_i : 100
+times = ARGV[1] ? ARGV[1].to_i : 1000
 puts "Starting benchmark serializing array with #{array.size} entries #{times} times\n\n"
 
 Benchmark.bmbm { |x|
-
-  data = array.map(&:attributes)
 
   x.report("Pump::Json#encode") {
     times.times {
@@ -160,9 +162,21 @@ Benchmark.bmbm { |x|
   end
 
   if defined?(Oj)
-    x.report("Oj") {
+    x.report("Oj compat") {
       times.times {
-        Oj.dump(data, :mode => :compat)
+        Oj.dump(array.map(&:attributes), :mode => :compat)
+      }
+    }
+
+    x.report("Oj strict") {
+      times.times {
+        Oj.dump(array.map(&:attributes).map{|it| it['created_at'] = it['created_at'].to_i;it}, :mode => :strict)
+      }
+    }
+
+    x.report("Oj wab") {
+      times.times {
+        Oj.dump(array.map(&:attributes_symbols).map{|it| it[:created_at] = it[:created_at].to_i;it}, :mode => :wab)
       }
     }
   end
@@ -170,7 +184,7 @@ Benchmark.bmbm { |x|
   if defined?(Yajl)
     x.report("Yajl") {
       times.times {
-        Yajl::Encoder.encode(data)
+        Yajl::Encoder.encode(array.map(&:attributes))
       }
     }
   end
