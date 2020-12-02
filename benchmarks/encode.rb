@@ -1,16 +1,23 @@
 #!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler/setup'
 
 require 'benchmark'
+require 'benchmark-memory'
+
 require 'to_json'
 require 'pump'
 require 'ox'
 require 'oj'
 require 'yajl'
+require 'active_record'
 require 'active_model'
 require 'activemodel-serializers-xml'
 require 'fast_jsonapi'
+require 'panko_serializer'
 
 class Person < Struct.new(:name, :age, :created_at)
   include ActiveModel::Serializers::Xml if defined?(ActiveModel)
@@ -30,6 +37,12 @@ pump_json = Pump::Json.new('person', [
   {:"created-at" => :created_at, :typecast => :xmlschema, :attributes => {:type => 'datetime'}, :never_nil => true},
   {:name => :name}
 ])
+
+module PankoBench
+  class PeopleSerializer < Panko::Serializer
+    attributes :name, :age, :created_at
+  end
+end
 
 module ToJsonBench
 
@@ -122,10 +135,15 @@ times = ARGV[1] ? ARGV[1].to_i : 1000
 puts "Starting benchmark serializing array with #{array.size} entries #{times} times\n\n"
 
 Benchmark.bmbm { |x|
-
   x.report("Pump::Json#encode") {
     times.times {
       pump_json.encode(array)
+    }
+  }
+
+  x.report("Panko") {
+    times.times {
+      Panko::ArraySerializer.new(array, each_serializer: PankoBench::PeopleSerializer).to_json
     }
   }
 
@@ -139,19 +157,19 @@ Benchmark.bmbm { |x|
     times.times {
       FastJsonapiSerializer.new(array).serialized_json
     }
-  }
+  } if false
 
   x.report("Pump::Xml#encode") {
     times.times {
       pump.encode(array)
     }
-  }
+  } if false
 
   x.report("Pump::Xml#encode (optimized)") {
     times.times {
       pump_optimized.encode(array)
     }
-  }
+  } if false
 
   if defined?(Ox) && false
     x.report("Ox") {
@@ -187,7 +205,97 @@ Benchmark.bmbm { |x|
         Yajl::Encoder.encode(array.map(&:attributes))
       }
     }
+  end if false
+
+  if defined?(ActiveModel)
+    x.report("ActiveModel#to_xml") {
+      times.times {
+        array.to_xml
+      }
+    } if false
+
+    x.report("ActiveModel#to_json") {
+      times.times {
+        array.to_json
+      }
+    }
   end
+}
+
+Benchmark.memory() { |x|
+  x.compare!
+
+  x.report("Pump::Json#encode") {
+    times.times {
+      pump_json.encode(array)
+    }
+  }
+
+  x.report("Panko") {
+    times.times {
+      Panko::ArraySerializer.new(array, each_serializer: PankoBench::PeopleSerializer).to_json
+    }
+  }
+
+  x.report("ToJson") {
+    times.times {
+      ToJsonBench::PeopleSerializer.json!(array)
+    }
+  }
+
+  x.report("fast_jsonapi") {
+    times.times {
+      FastJsonapiSerializer.new(array).serialized_json
+    }
+  } if false
+
+  x.report("Pump::Xml#encode") {
+    times.times {
+      pump.encode(array)
+    }
+  } if false
+
+  x.report("Pump::Xml#encode (optimized)") {
+    times.times {
+      pump_optimized.encode(array)
+    }
+  } if false
+
+  if defined?(Ox) && false
+    x.report("Ox") {
+      times.times {
+        serialize_with_ox(array)
+      }
+    }
+  end
+
+  if defined?(Oj)
+    x.report("Oj compat") {
+      times.times {
+        Oj.dump(array.map(&:attributes), :mode => :compat)
+      }
+    }
+
+    x.report("Oj strict") {
+      times.times {
+        Oj.dump(array.map(&:attributes).map{|it| it['created_at'] = it['created_at'].to_i;it}, :mode => :strict)
+      }
+    }
+
+    x.report("Oj wab") {
+      times.times {
+        Oj.dump(array.map(&:attributes_symbols).map{|it| it[:created_at] = it[:created_at].to_i;it}, :mode => :wab)
+      }
+    }
+  end
+
+  if defined?(Yajl)
+    x.report("Yajl") {
+      times.times {
+        Yajl::Encoder.encode(array.map(&:attributes))
+      }
+    }
+  end if false
 
   if defined?(ActiveModel)
     x.report("ActiveModel#to_xml") {

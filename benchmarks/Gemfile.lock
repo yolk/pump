@@ -21,21 +21,29 @@ GEM
       activemodel (> 5.x)
       activesupport (> 5.x)
       builder (~> 3.1)
+    activerecord (6.0.3.2)
+      activemodel (= 6.0.3.2)
+      activesupport (= 6.0.3.2)
     activesupport (6.0.3.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    benchmark-memory (0.1.2)
+      memory_profiler (~> 0.9)
     builder (3.2.4)
     concurrent-ruby (1.1.6)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
+    memory_profiler (0.9.14)
     minitest (5.14.1)
     oj (3.10.8)
     ox (2.13.2)
+    panko_serializer (0.7.4)
+      oj (~> 3.10.0)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
@@ -48,9 +56,12 @@ PLATFORMS
 DEPENDENCIES
   activemodel
   activemodel-serializers-xml
+  activerecord
+  benchmark-memory
   fast_jsonapi
   oj
   ox
+  panko_serializer
   pump!
   to_json!
   yajl-ruby
