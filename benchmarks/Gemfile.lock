@@ -39,7 +39,7 @@ GEM
     thread_safe (0.3.6)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
-    yajl-ruby (1.4.2)
+    yajl-ruby (1.4.3)
     zeitwerk (2.4.0)
 
 PLATFORMS
