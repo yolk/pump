@@ -1,5 +1,6 @@
-require File.dirname(__FILE__) + '/../lib/pump.rb'
+Warning[:deprecated] = true
 
+require File.dirname(__FILE__) + '/../lib/pump.rb'
 require 'rspec/its'
 
 require 'active_support/json'
