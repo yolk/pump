@@ -41,7 +41,7 @@ module Pump
       end
 
       def value_and_close_tag(path=nil)
-        value = value_nodes? ? nodes.first.to_s(path) : ("\n" << nodes.map(&:to_s).join)
+        value = value_nodes? ? nodes.first.to_s(path) : (+"\n" << nodes.map(&:to_s).join)
         ">#{value}#{tabs unless value_nodes?}</#{format_name(name)}>\n"
       end
 
@@ -56,7 +56,7 @@ module Pump
 
       def attributes_string
         return "" if !attributes || attributes.size == 0
-        attributes.inject('') do |str, (key, value)|
+        attributes.inject(+"") do |str, (key, value)|
           str << " #{key}=\\\"#{value}\\\""
         end
       end

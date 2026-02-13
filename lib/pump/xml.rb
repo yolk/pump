@@ -86,7 +86,7 @@ module Pump
 
     def remove_ilegal_chars(string)
       return string if !string.is_a?(String) || string =~ VALID_XML_CHARS
-      out = ""
+      out = +""
       string.chars.each do |c|
         case c.ord
         when *VALID_CHAR

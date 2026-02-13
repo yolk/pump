@@ -83,7 +83,7 @@ module Pump
     end
 
     def build_part(config, variable, options, path=[])
-      config.inject("") do |str, config|
+      config.inject(+"") do |str, config|
         build_key_value_pair(str, config, variable, options, path)
         str
       end
